@@ -1,13 +1,35 @@
 import pygame
 import sys
 
-def setPixel(tela, x, y, cor):#Desenha um pixel
-    tela.set_at((x, y), cor)
-
 largura, altura = 600, 400
 PRETO = (0, 0, 0)
 BRANCO = (255, 255, 255)
 rodando = True 
+
+def setPixel(tela, x, y, cor):#Desenha um pixel
+    if x < 0 or x > largura or y < 0 or y > altura:
+        return
+    else:
+        tela.set_at((x, y), cor)
+
+def dda(tela, x0, x1, y0, y1):#Desenha a reta
+    deltaX = x1 - x0
+    deltaY = y1 - y0
+
+    passos = max(abs(deltaX), abs(deltaY))
+
+    xIncremento = deltaX/passos
+    yIncremento = deltaY/passos
+
+    xNovo = x0
+    yNovo = y0
+    while yNovo != y1 and xNovo != x1:
+        if tela.get_at((round(xNovo), round(yNovo))) == (255, 255, 255, 255):
+            continue
+        setPixel(tela, round(xNovo), round(yNovo), BRANCO)
+        xNovo += xIncremento
+        yNovo += yIncremento
+
 
 pygame.init() #Inicialização
 
@@ -23,10 +45,8 @@ while rodando:
             rodando = False
     
     tela.fill(PRETO)#Preenche a tela com uma cor
-    setPixel(tela, 100, 100, BRANCO)
-    setPixel(tela, 100, 101, BRANCO)
-    setPixel(tela, 100, 102, BRANCO)
-    setPixel(tela, 100, 103, BRANCO)
+
+    dda(tela, 0, 600, 0, 400)
 
     pygame.display.flip()#Atualiza a tela 
 
