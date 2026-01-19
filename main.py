@@ -30,6 +30,80 @@ def dda(tela, x0, x1, y0, y1):#Desenha a reta
         xNovo += xIncremento
         yNovo += yIncremento
 
+def setPixel_simetria_circulo(tela, xc, yc, x, y, cor):
+    setPixel(tela, xc + x, yc + y, cor)
+    setPixel(tela, xc - x, yc + y, cor)
+    setPixel(tela, xc + x, yc - y, cor)
+    setPixel(tela, xc - x, yc - y, cor)
+    setPixel(tela, xc + y, yc + x, cor)
+    setPixel(tela, xc - y, yc + x, cor)
+    setPixel(tela, xc + y, yc - x, cor)
+    setPixel(tela, xc - y, yc - x, cor)
+
+def bresenham_circulo(tela, xc, yc, r, cor):
+     x = 0
+     y = r
+
+     p = 1 - r   # parâmetro de decisão inicial
+
+     setPixel_simetria_circulo(tela, xc, yc, x, y, cor)
+
+     while x < y:
+        x += 1
+
+        if p < 0:
+            # escolhe E
+            p = p + 2*x + 1
+        else:
+            # escolhe SE
+            y -= 1
+            p = p + 2*(x - y) + 1
+
+        setPixel_simetria_circulo(tela, xc, yc, x, y, cor)
+
+def setPixel_simetria_elipse(tela, xc, yc, x, y, cor):
+    setPixel(tela, xc + x, yc + y, cor)
+    setPixel(tela, xc - x, yc + y, cor)
+    setPixel(tela, xc + x, yc - y, cor)
+    setPixel(tela, xc - x, yc - y, cor)
+
+def bresenham_elipse(tela, xc, yc, a, b, cor):
+    x = 0
+    y = b
+
+    a2 = a * a
+    b2 = b * b
+
+    # Região 1
+    p = b2 - a2*b + a2//4
+
+    setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
+
+    while 2*b2*x < 2*a2*y:
+        x += 1
+
+        if p < 0:
+            p = p + 2*b2*x + b2
+        else:
+            y -= 1
+            p = p + 2*b2*x - 2*a2*y + b2
+
+        setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
+
+    # Região 2
+    p = b2*(x + 0.5)*(x + 0.5) + a2*(y - 1)*(y - 1) - a2*b2
+
+    while y > 0:
+        y -= 1
+
+        if p > 0:
+            p = p - 2*a2*y + a2
+        else:
+            x += 1
+            p = p + 2*b2*x - 2*a2*y + a2
+
+        setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
+
 def boundary_fill(surface,x,y,boundary_color,fill_color):
     stack=[]
     
