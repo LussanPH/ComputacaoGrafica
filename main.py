@@ -172,15 +172,35 @@ clock = pygame.time.Clock()#Determina o FPS
 clock.tick(60)
 
 while rodando:
-    for evento in pygame.event.get():#Verifica se algum evento foi acionado
-        if evento.type == pygame.QUIT:#evento de saída
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
             rodando = False
     
-    tela.fill(PRETO)#Preenche a tela com uma cor
+    tela.fill(PRETO)
+    
+    # Teste DDA (reta)
+    dda(tela, 0, 599, 0, 399)
 
-    dda(tela, 0, 600, 0, 400)
+    # Teste CÍRCULO
+    bresenham_circulo(
+        tela,
+        xc=150,
+        yc=200,
+        r=80,
+        cor=BRANCO
+    )
 
-    pygame.display.flip()#Atualiza a tela 
+    # Teste ELIPSE
+    bresenham_elipse(
+        tela,
+        xc=420,
+        yc=200,
+        a=120,   # raio horizontal
+        b=60,    # raio vertical
+        cor=BRANCO
+    )
+
+    pygame.display.flip() 
 
 #Finalização
 pygame.quit()
