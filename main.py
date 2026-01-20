@@ -43,13 +43,24 @@ while rodando:
         b=60,    # raio vertical
         cor=BRANCO
     )
-    
-    #Teste Poligono
+    poligono_boundary = [
+        (100, 80),
+        (200, 200),
+        (60, 260)
+    ]
+
     funcoes.desenhar_poligono(
         tela,
-        [(150, 100), (250, 250), (50, 250)],
-        cor=BRANCO
+        poligono_boundary,
+        BRANCO
     )
+
+    funcoes.scanline(
+        tela,
+        poligono_boundary,
+        BRANCO
+    )
+
     pygame.display.flip() 
 
 #Finalização

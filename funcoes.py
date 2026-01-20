@@ -7,23 +7,21 @@ def setPixel(tela, x, y, cor):#Desenha um pixel
     else:
         tela.set_at((x, y), cor)
 
-def dda(tela, x0, x1, y0, y1, cor):#Desenha uma reta por dda
+def dda(surface, x0, x1, y0, y1, cor):
     deltaX = x1 - x0
     deltaY = y1 - y0
-
-    passos = max(abs(deltaX), abs(deltaY))
-
-    xIncremento = deltaX/passos
-    yIncremento = deltaY/passos
-
-    xNovo = x0
-    yNovo = y0
-    while yNovo != y1 and xNovo != x1:
-        if tela.get_at((round(xNovo), round(yNovo))) == (255, 255, 255, 255):
-            continue
-        setPixel(tela, round(xNovo), round(yNovo), cor)
-        xNovo += xIncremento
-        yNovo += yIncremento
+    passos = int(max(abs(deltaX), abs(deltaY)))
+    if passos == 0:
+        setPixel(surface, x0, y0, cor)
+        return
+    xIncremento = deltaX / passos
+    yIncremento = deltaY / passos
+    x = x0
+    y = y0
+    for i in range(passos + 1):
+        setPixel(surface, round(x), round(y), cor)
+        x += xIncremento
+        y += yIncremento
 
 def bresenham_reta(tela, x0, x1, y0, y1, cor):
     deltaX = abs(x1 - x0)
@@ -137,61 +135,45 @@ def bresenham_elipse(tela, xc, yc, a, b, cor):
 
         setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
 
-def boundary_fill(surface,x,y,boundary_color,fill_color):
-    stack=[]
-    
-    stack.append((x,y))
+def boundary_fill(surface, x, y, boundary_color, fill_color):
+    # iterativo com pilha; compara apenas RGB (ignora alpha)
+    stack = [(x, y)]
     while stack:
-        x,y=stack.pop()
-        if x < 0 or x >= largura or y < 0 or y >= altura:
-           continue
-        
-        current_color=surface.get_at((x,y))
-        
-        if( current_color!= boundary_color and current_color != fill_color):
-            setPixel(surface, x, y, fill_color)
-            stack.append((x+1,y))
-            stack.append((x-1,y))
-            stack.append((x,y+1))
-            stack.append((x,y-1))
+        cx, cy = stack.pop()
+        if cx < 0 or cx >= largura or cy < 0 or cy >= altura:
+            continue
+        current_color = surface.get_at((cx, cy))[:3]
+        if current_color != tuple(boundary_color) and current_color != tuple(fill_color):
+            setPixel(surface, cx, cy, fill_color)
+            stack.append((cx + 1, cy))
+            stack.append((cx - 1, cy))
+            stack.append((cx, cy + 1))
+            stack.append((cx, cy - 1))
              
 def scanline(surface, pontos, cor):
     ys = [p[1] for p in pontos]
-    ymin = min(ys)
-    ymax = max(ys)
-
+    ymin = max(0, min(ys))
+    ymax = min(altura - 1, max(ys))
     n = len(pontos)
-
-    for y in range(ymin, ymax):
+    for y in range(ymin, ymax + 1):
         intersecoes = []
-
         for i in range(n):
             x0, y0 = pontos[i]
             x1, y1 = pontos[(i + 1) % n]
-
-            # Ignorar arestas horizontais
             if y0 == y1:
                 continue
-
-            # Garantir y0 < y1
             if y0 > y1:
                 x0, y0, x1, y1 = x1, y1, x0, y0
-
-            # Scanline fora da aresta
             if y < y0 or y >= y1:
                 continue
-
-            # Cálculo da interseção
-            x = x0 + (y - y0) * (x1 - x0) / (y1 - y0)
-            intersecoes.append(x)
-
+            x_int = x0 + (y - y0) * (x1 - x0) / (y1 - y0)
+            intersecoes.append(x_int)
         intersecoes.sort()
-
-        # Preenchimento entre pares
         for i in range(0, len(intersecoes), 2):
             if i + 1 < len(intersecoes):
-                x_inicio = int(round(intersecoes[i]))
-                x_fim = int(round(intersecoes[i + 1]))
-
-                for x in range(x_inicio, x_fim + 1):
+                x_start = int(round(intersecoes[i]))
+                x_end = int(round(intersecoes[i + 1]))
+                x_start = max(0, x_start)
+                x_end = min(largura - 1, x_end)
+                for x in range(x_start, x_end + 1):
                     setPixel(surface, x, y, cor)
