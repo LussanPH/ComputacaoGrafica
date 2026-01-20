@@ -43,7 +43,13 @@ while rodando:
         b=60,    # raio vertical
         cor=BRANCO
     )
-
+    
+    #Teste Poligono
+    funcoes.desenhar_poligono(
+        tela,
+        [(150, 100), (250, 250), (50, 250)],
+        cor=BRANCO
+    )
     pygame.display.flip() 
 
 #Finalização

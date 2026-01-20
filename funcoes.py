@@ -25,11 +25,9 @@ def dda(tela, x0, x1, y0, y1, cor):#Desenha uma reta por dda
         xNovo += xIncremento
         yNovo += yIncremento
 
-def bresenham_reta(tela, x0, x1, y0, y1, cor):#Desenha uma reta por bresenham
+def bresenham_reta(tela, x0, x1, y0, y1, cor):
     deltaX = abs(x1 - x0)
     deltaY = abs(y1 - y0)
-
-    p = 2*deltaY - deltaX
 
     direcaoX = 1
     direcaoY = 1
@@ -38,50 +36,32 @@ def bresenham_reta(tela, x0, x1, y0, y1, cor):#Desenha uma reta por bresenham
     if y0 > y1:
         direcaoY = -1
 
-    while x0 != x1:
+    p = deltaX - deltaY
+
+    while True:
         setPixel(tela, x0, y0, cor)
 
-        if p < 0:
+        if x0 == x1 and y0 == y1:
+            break
+
+        p2 = 2 * p
+
+        if p2 > -deltaY:
+            p -= deltaY
             x0 += direcaoX
-            p += 2*deltaY
-        else:
-            x0 += direcaoX
+
+        if p2 < deltaX:
+            p += deltaX
             y0 += direcaoY
-            p += (2*deltaY - 2*deltaX)
-def identidade():
-    return [
-        [1,0,0],
-        [0,1,0],
-        [0,0,1]
-    ]
-def translacao(tx,ty):
-    return [
-        [1,0,tx],
-        [0,1,ty],
-        [0,0,1]
-    ]
-def escala(sx,sy):
-    return [
-        [sx,0,0],
-        [0,sy,0],
-        [0,0,1]
-    ]
-def rotacao(theta):
-    c= math.cos(theta)
-    s= math.sin(theta)
-    
-    return [
-        [c,-s,0]
-        [s,c,0],
-        [0,0,1]
-    ]
-def desenhar_poligono(tela,pontos,cor):
-    n=len(pontos)
+
+def desenhar_poligono(tela, pontos, cor):
+    n = len(pontos)
+    if n < 3:
+        return  
     for i in range(n):
-        x0,y0=pontos[i]
-        x1,y1=pontos[(i+1)%n]
-    
-    bresenham_reta(tela,x0,x1,y0,y1,cor)
+        x0, y0 = pontos[i]
+        x1, y1 = pontos[(i + 1) % n] 
+        bresenham_reta(tela, x0, x1, y0, y1, cor)
 
 def setPixel_simetria_circulo(tela, xc, yc, x, y, cor):
     setPixel(tela, xc + x, yc + y, cor)
