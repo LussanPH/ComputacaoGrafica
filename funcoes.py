@@ -7,19 +7,19 @@ def setPixel(tela, x, y, cor):#Desenha um pixel
     else:
         tela.set_at((x, y), cor)
 
-def dda(surface, x0, x1, y0, y1, cor):
+def dda(tela, x0, x1, y0, y1, cor):
     deltaX = x1 - x0
     deltaY = y1 - y0
     passos = int(max(abs(deltaX), abs(deltaY)))
     if passos == 0:
-        setPixel(surface, x0, y0, cor)
+        setPixel(tela, x0, y0, cor)
         return
     xIncremento = deltaX / passos
     yIncremento = deltaY / passos
     x = x0
     y = y0
     for i in range(passos + 1):
-        setPixel(surface, round(x), round(y), cor)
+        setPixel(tela, round(x), round(y), cor)
         x += xIncremento
         y += yIncremento
 
@@ -135,22 +135,22 @@ def bresenham_elipse(tela, xc, yc, a, b, cor):
 
         setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
 
-def boundary_fill(surface, x, y, boundary_color, fill_color):
+def boundary_fill(tela, x, y, boundary_color, fill_color):
     # iterativo com pilha; compara apenas RGB (ignora alpha)
     stack = [(x, y)]
     while stack:
         cx, cy = stack.pop()
         if cx < 0 or cx >= largura or cy < 0 or cy >= altura:
             continue
-        current_color = surface.get_at((cx, cy))[:3]
+        current_color = tela.get_at((cx, cy))[:3]
         if current_color != tuple(boundary_color) and current_color != tuple(fill_color):
-            setPixel(surface, cx, cy, fill_color)
+            setPixel(tela, cx, cy, fill_color)
             stack.append((cx + 1, cy))
             stack.append((cx - 1, cy))
             stack.append((cx, cy + 1))
             stack.append((cx, cy - 1))
              
-def scanline(surface, pontos, cor):
+def scanline(tela, pontos, cor):
     ys = [p[1] for p in pontos]
     ymin = max(0, min(ys))
     ymax = min(altura - 1, max(ys))
@@ -176,4 +176,29 @@ def scanline(surface, pontos, cor):
                 x_start = max(0, x_start)
                 x_end = min(largura - 1, x_end)
                 for x in range(x_start, x_end + 1):
-                    setPixel(surface, x, y, cor)
+                    setPixel(tela, x, y, cor)
+
+def multiplicar_matriz_ponto(M,p):
+    x,y,w = p
+    x_novo = M[0][0]*x + M[0][1]*y + M[0][2]*w
+    y_novo = M[1][0]*x + M[1][1]*y + M[1][2]*w
+    w_novo = M[2][0]*x + M[2][1]*y + M[2][2]*w
+    return(x_novo,y_novo,w_novo)
+
+def matriz_translacao(tx, ty):
+    return [
+        [1, 0, tx],
+        [0, 1, ty],
+        [0, 0, 1]
+    ]
+
+def transladar_pontos(pontos,tx,ty):
+    T = matriz_translacao(tx,ty)
+    novos_pontos = []
+    for x,y in pontos:
+        x_novo,y_novo,_ = multiplicar_matriz_ponto(T,(x,y,1))
+        novos_pontos.append((int(x_novo), int(y_novo)))
+        
+    return novos_pontos
+
+

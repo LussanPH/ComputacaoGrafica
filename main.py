@@ -61,6 +61,13 @@ while rodando:
         BRANCO
     )
 
+    quadrado = [(350, 50),(450, 50),(450, 150),(350, 150)]
+
+    quadrado_t = funcoes.transladar_pontos(quadrado, 80, 40)
+
+    funcoes.desenhar_poligono(tela, quadrado, BRANCO)
+    funcoes.desenhar_poligono(tela, quadrado_t, BRANCO)
+    
     pygame.display.flip() 
 
 #Finalização
