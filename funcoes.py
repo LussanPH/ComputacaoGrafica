@@ -1,3 +1,4 @@
+import math
 from constantes import largura, altura
 
 def setPixel(tela, x, y, cor):#Desenha um pixel
@@ -47,6 +48,40 @@ def bresenham_reta(tela, x0, x1, y0, y1, cor):#Desenha uma reta por bresenham
             x0 += direcaoX
             y0 += direcaoY
             p += (2*deltaY - 2*deltaX)
+def identidade():
+    return [
+        [1,0,0],
+        [0,1,0],
+        [0,0,1]
+    ]
+def translacao(tx,ty):
+    return [
+        [1,0,tx],
+        [0,1,ty],
+        [0,0,1]
+    ]
+def escala(sx,sy):
+    return [
+        [sx,0,0],
+        [0,sy,0],
+        [0,0,1]
+    ]
+def rotacao(theta):
+    c= math.cos(theta)
+    s= math.sin(theta)
+    
+    return [
+        [c,-s,0]
+        [s,c,0],
+        [0,0,1]
+    ]
+def desenhar_poligono(tela,pontos,cor):
+    n=len(pontos)
+    for i in range(n):
+        x0,y0=pontos[i]
+        x1,y1=pontos[(i+1)%n]
+    
+    bresenham_reta(tela,x0,x1,y0,y1,cor)
 
 def setPixel_simetria_circulo(tela, xc, yc, x, y, cor):
     setPixel(tela, xc + x, yc + y, cor)
