@@ -187,6 +187,67 @@ def scanline(tela, pontos, cor):
                 x_end = min(largura - 1, x_end)
                 for x in range(x_start, x_end + 1):
                     setPixel(tela, x, y, cor)
+                    
+def scanline_fill_circle(surface, xc, yc, r, cor):
+    
+    if r <= 0:
+        return
+
+    ymin = max(0, int(math.ceil(yc - r)))
+    ymax = min(altura - 1, int(math.floor(yc + r)))
+
+    r2 = r * r
+    for y in range(ymin, ymax + 1):
+        dy = y - yc
+        inside = r2 - dy * dy
+        if inside < 0:
+            continue
+        dx = int(math.floor(math.sqrt(inside)))
+        x_start = max(0, xc - dx)
+        x_end = min(largura - 1, xc + dx)
+        for x in range(x_start, x_end + 1):
+            setPixel(surface, x, y, cor)
+
+def scanline_fill_ellipse(surface, xc, yc, a, b, cor):
+    if a <= 0 or b <= 0:
+        return
+
+    ymin = max(0, int(math.ceil(yc - b)))
+    ymax = min(altura - 1, int(math.floor(yc + b)))
+
+    a2 = a * a
+    b2 = b * b
+    for y in range(ymin, ymax + 1):
+        dy = y - yc
+        val = 1.0 - (dy * dy) / b2
+        if val <= 0:
+            if val < 0:
+                continue
+            dx = 0
+        else:
+            dx = int(math.floor(a * math.sqrt(val)))
+        x_start = max(0, xc - dx)
+        x_end = min(largura - 1, xc + dx)
+        for x in range(x_start, x_end + 1):
+            setPixel(surface, x, y, cor)
+
+def escala(pontos,sx,sy):
+    xm=[]
+    ym=[]
+    for p in pontos:
+        xm.append(p[0])
+        ym.append(p[1])
+    
+    xc= sum(xm)/len(xm)
+    yc= sum(ym)/len(ym)
+    
+    novos_pontos=[]
+    
+    for x,y in pontos:
+        xn= xc+(x-xc)*sx
+        yn= yc+(y-yc)*sy
+        novos_pontos.append((int(xn),int(yn)))
+    return novos_pontos
 
 
 def multiplicar_matriz_ponto(M,p):
