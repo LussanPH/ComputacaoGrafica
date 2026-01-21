@@ -1,3 +1,5 @@
 largura, altura = 600, 400
 PRETO = (0, 0, 0)
 BRANCO = (255, 255, 255)
+CARAMELO = (181, 101, 29)
+VERMELHO_ESCURO = (120, 30, 30)

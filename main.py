@@ -1,6 +1,7 @@
 import pygame
 import sys
 import funcoes
+import cachorro
 from constantes import largura, altura, BRANCO, PRETO
 rodando = True 
 
@@ -74,7 +75,7 @@ while rodando:
     funcoes.desenhar_poligono(tela, quadrado_t, BRANCO)'''
 
     #Teste Rotação
-    if cont == 0:
+    '''if cont == 0:
         quadrado = [(350, 50),(450, 50),(450, 150),(350, 150)]
         cont += 1
         velocidade_e_sentido = 2
@@ -83,7 +84,10 @@ while rodando:
     quadrado_rotacionado, angulo_graus = funcoes.rotacionar(quadrado, velocidade_e_sentido, angulo_graus, pivoXY)
     if angulo_graus >= 360:
         angulo_graus = 0
-    funcoes.desenhar_poligono(tela, quadrado_rotacionado, BRANCO)
+    funcoes.desenhar_poligono(tela, quadrado_rotacionado, BRANCO)'''
+
+    cachorro.desenhar_cachorro(tela, 450, 300)
+
 
     
     pygame.display.flip() 
