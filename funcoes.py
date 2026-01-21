@@ -1,11 +1,13 @@
 import math
 from constantes import largura, altura
 
+
 def setPixel(tela, x, y, cor):#Desenha um pixel
     if x < 0 or x > largura or y < 0 or y > altura:
         return
     else:
         tela.set_at((x, y), cor)
+
 
 def dda(tela, x0, x1, y0, y1, cor):
     deltaX = x1 - x0
@@ -22,6 +24,7 @@ def dda(tela, x0, x1, y0, y1, cor):
         setPixel(tela, round(x), round(y), cor)
         x += xIncremento
         y += yIncremento
+
 
 def bresenham_reta(tela, x0, x1, y0, y1, cor):
     deltaX = abs(x1 - x0)
@@ -52,6 +55,7 @@ def bresenham_reta(tela, x0, x1, y0, y1, cor):
             p += deltaX
             y0 += direcaoY
 
+
 def desenhar_poligono(tela, pontos, cor):
     n = len(pontos)
     if n < 3:
@@ -60,6 +64,7 @@ def desenhar_poligono(tela, pontos, cor):
         x0, y0 = pontos[i]
         x1, y1 = pontos[(i + 1) % n] 
         bresenham_reta(tela, x0, x1, y0, y1, cor)
+
 
 def setPixel_simetria_circulo(tela, xc, yc, x, y, cor):
     setPixel(tela, xc + x, yc + y, cor)
@@ -70,6 +75,7 @@ def setPixel_simetria_circulo(tela, xc, yc, x, y, cor):
     setPixel(tela, xc - y, yc + x, cor)
     setPixel(tela, xc + y, yc - x, cor)
     setPixel(tela, xc - y, yc - x, cor)
+
 
 def bresenham_circulo(tela, xc, yc, r, cor):
      x = 0
@@ -92,11 +98,13 @@ def bresenham_circulo(tela, xc, yc, r, cor):
 
         setPixel_simetria_circulo(tela, xc, yc, x, y, cor)
 
+
 def setPixel_simetria_elipse(tela, xc, yc, x, y, cor):
     setPixel(tela, xc + x, yc + y, cor)
     setPixel(tela, xc - x, yc + y, cor)
     setPixel(tela, xc + x, yc - y, cor)
     setPixel(tela, xc - x, yc - y, cor)
+
 
 def bresenham_elipse(tela, xc, yc, a, b, cor):
     x = 0
@@ -135,6 +143,7 @@ def bresenham_elipse(tela, xc, yc, a, b, cor):
 
         setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
 
+
 def boundary_fill(tela, x, y, boundary_color, fill_color):
     # iterativo com pilha; compara apenas RGB (ignora alpha)
     stack = [(x, y)]
@@ -149,7 +158,8 @@ def boundary_fill(tela, x, y, boundary_color, fill_color):
             stack.append((cx - 1, cy))
             stack.append((cx, cy + 1))
             stack.append((cx, cy - 1))
-             
+
+
 def scanline(tela, pontos, cor):
     ys = [p[1] for p in pontos]
     ymin = max(0, min(ys))
@@ -178,6 +188,7 @@ def scanline(tela, pontos, cor):
                 for x in range(x_start, x_end + 1):
                     setPixel(tela, x, y, cor)
 
+
 def multiplicar_matriz_ponto(M,p):
     x,y,w = p
     x_novo = M[0][0]*x + M[0][1]*y + M[0][2]*w
@@ -185,12 +196,14 @@ def multiplicar_matriz_ponto(M,p):
     w_novo = M[2][0]*x + M[2][1]*y + M[2][2]*w
     return(x_novo,y_novo,w_novo)
 
+
 def matriz_translacao(tx, ty):
     return [
         [1, 0, tx],
         [0, 1, ty],
         [0, 0, 1]
     ]
+
 
 def transladar_pontos(pontos,tx,ty):
     T = matriz_translacao(tx,ty)
@@ -200,5 +213,48 @@ def transladar_pontos(pontos,tx,ty):
         novos_pontos.append((int(x_novo), int(y_novo)))
         
     return novos_pontos
+
+def calcular_centro_media(vertices):
+    soma_x = 0
+    soma_y = 0
+    qtd = len(vertices)
+
+    for x, y in vertices:
+        soma_x += x
+        soma_y += y
+    
+    x = int(soma_x / qtd)
+    y = int(soma_y / qtd)
+
+    return (x, y)
+
+
+def rotacionar(vertices, velocidade_e_sentido, angulo_graus, pivoXY):
+    xPivo, yPivo = pivoXY
+
+    angulo_rad = math.radians(angulo_graus)
+
+    cosseno_angulo = math.cos(angulo_rad)
+    seno_angulo = math.sin(angulo_rad)
+
+    vertices_rotacionados = []
+    
+    for inicialX, inicialY in vertices:
+        x_relativo = inicialX - xPivo
+        y_relativo = inicialY - yPivo
+
+        x_rotacionado = int((x_relativo * cosseno_angulo) - (y_relativo * seno_angulo))
+        y_rotacionado = int((x_relativo * seno_angulo) + (y_relativo * cosseno_angulo))
+
+        x_final = x_rotacionado + xPivo
+        y_final = y_rotacionado + yPivo
+
+        vertices_rotacionados.append((x_final, y_final))
+
+    angulo_graus += velocidade_e_sentido
+    
+    return vertices_rotacionados, angulo_graus
+
+
 
 
