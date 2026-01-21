@@ -2,6 +2,7 @@ import pygame
 import sys
 import funcoes
 import cachorro
+import cenario
 from constantes import largura, altura, BRANCO, PRETO
 rodando = True 
 
@@ -86,8 +87,8 @@ while rodando:
         angulo_graus = 0
     funcoes.desenhar_poligono(tela, quadrado_rotacionado, BRANCO)'''
 
+    cenario.cenario(tela)
     cachorro.desenhar_cachorro(tela, 450, 300)
-
 
     
     pygame.display.flip() 
