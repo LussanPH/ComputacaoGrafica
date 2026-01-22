@@ -1,6 +1,7 @@
 import pygame
 import sys
 import funcoes
+import jogador
 import cachorro
 import cenario
 from constantes import largura, altura, BRANCO, PRETO
@@ -9,7 +10,7 @@ rodando = True
 pygame.init() #Inicialização
 
 tela = pygame.display.set_mode((largura, altura)) #Tamanho da Janela
-pygame.display.set_caption("RUn") #Título da janela
+pygame.display.set_caption("Djonga RUn") #Título da janela
 
 clock = pygame.time.Clock()#Determina o FPS
 clock.tick(60)
@@ -88,7 +89,10 @@ while rodando:
     funcoes.desenhar_poligono(tela, quadrado_rotacionado, BRANCO)'''
 
     cenario.cenario(tela)
-    cachorro.desenhar_cachorro(tela, 450, 300)
+
+    #cachorro.desenhar_cachorro(tela, 450, 300)
+
+    jogador.desenhar_jogador(tela, 175, 225)
 
     
     pygame.display.flip() 
