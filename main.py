@@ -4,6 +4,7 @@ import funcoes
 import cachorro
 import cenario
 from constantes import largura, altura, BRANCO, PRETO
+import pombo
 rodando = True 
 
 pygame.init() #Inicialização
@@ -89,6 +90,7 @@ while rodando:
 
     cenario.cenario(tela)
     cachorro.desenhar_cachorro(tela, 450, 300)
+    pombo.desenhar_pombo(tela,400, 150)
 
     
     pygame.display.flip() 
