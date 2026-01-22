@@ -1,4 +1,4 @@
-largura, altura = 600, 400
+largura, altura = 1000, 400
 PRETO = (0, 0, 0)
 BRANCO = (255, 255, 255)
 CARAMELO = (181, 101, 29)
@@ -7,7 +7,7 @@ CINZA = (150, 150, 150)
 CINZA_ESCURO = (90, 90, 90)
 AZUL = (0, 0, 255)
 VERDE = (0, 180, 0)
+VERMELHO = (255, 0, 0)
 CINZA_CHUMBO = (35, 35, 35)   
-CINZA_ESCURO = (50, 50, 50)  
 CINZA_CLARO = (70, 70, 70) 
 LARANJA = (255,144,0)
