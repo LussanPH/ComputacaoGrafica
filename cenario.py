@@ -3,7 +3,16 @@ import funcoes
 from constantes import largura, altura, BRANCO, PRETO, CINZA, AZUL, CINZA_ESCURO,VERDE
 
 def cenario(tela):
-    tela.fill(AZUL)
+    y_topo = 0
+    y_base = altura - 1
+    fundo= [
+        (0, y_topo),
+        (largura - 1, y_topo),
+        (largura - 1, y_base),
+        (0, y_base)
+    ]
+    funcoes.desenhar_poligono(tela,fundo,AZUL)
+    funcoes.scanline(tela, fundo, AZUL)
 
     y_topo = altura - altura // 3
     y_base = altura - 1
@@ -13,8 +22,8 @@ def cenario(tela):
         (largura - 1, y_base),
         (0, y_base)
     ]
-    funcoes.desenhar_poligono(tela, chao,VERDE)
-    funcoes.scanline(tela, chao, VERDE)
+    funcoes.desenhar_poligono(tela, chao,CINZA)
+    funcoes.scanline(tela, chao, CINZA)
     funcoes.desenhar_poligono(tela, [(0, y_topo), (largura, y_topo)], PRETO)
 
     largura_coluna = 40
