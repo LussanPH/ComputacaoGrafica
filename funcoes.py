@@ -66,7 +66,7 @@ def desenhar_poligono(tela, pontos, cor):
         bresenham_reta(tela, x0, x1, y0, y1, cor)
 
 
-def get_simetria_circulo(tela, xc, yc, x, y, cor):
+def get_simetria_circulo(xc, yc, x, y):
     return [
         (xc + x, yc + y), (xc - x, yc + y), (xc + x, yc - y),
         (xc - x, yc - y), (xc + y, yc + x), (xc - y, yc + x),
@@ -81,7 +81,7 @@ def bresenham_circulo(tela, xc, yc, r, cor):
 
     pontos_circulo = []
 
-    lista_pontos = get_simetria_circulo(tela, xc, yc, x, y, cor)
+    lista_pontos = get_simetria_circulo(xc, yc, x, y)
 
     for ponto in lista_pontos:
         pontos_circulo.append(ponto)
@@ -97,21 +97,21 @@ def bresenham_circulo(tela, xc, yc, r, cor):
             y -= 1
             p = p + 2*(x - y) + 1
 
-        lista_pontos = get_simetria_circulo(tela, xc, yc, x, y, cor)
+        lista_pontos = get_simetria_circulo(xc, yc, x, y)
         for ponto in lista_pontos:
             pontos_circulo.append(ponto)
     
     return pontos_circulo
 
 
-def setPixel_simetria_elipse(tela, xc, yc, x, y, cor):
-    setPixel(tela, xc + x, yc + y, cor)
-    setPixel(tela, xc - x, yc + y, cor)
-    setPixel(tela, xc + x, yc - y, cor)
-    setPixel(tela, xc - x, yc - y, cor)
+def get_simetria_elipse(xc, yc, x, y):
+    return [(xc + x, yc + y), (xc - x, yc + y),
+            (xc + x, yc - y), (xc - x, yc - y)]
 
 
 def bresenham_elipse(tela, xc, yc, a, b, cor):
+    pontos_elipse = []
+
     x = 0
     y = b
 
@@ -121,7 +121,9 @@ def bresenham_elipse(tela, xc, yc, a, b, cor):
     # Região 1
     p = b2 - a2*b + a2//4
 
-    setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
+    lista_pontos = get_simetria_elipse(xc, yc, x, y)
+    for ponto in lista_pontos:
+        pontos_elipse.append(ponto)
 
     while 2*b2*x < 2*a2*y:
         x += 1
@@ -132,7 +134,9 @@ def bresenham_elipse(tela, xc, yc, a, b, cor):
             y -= 1
             p = p + 2*b2*x - 2*a2*y + b2
 
-        setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
+        lista_pontos = get_simetria_elipse(xc, yc, x, y)
+        for ponto in lista_pontos:
+            pontos_elipse.append(ponto)
 
     # Região 2
     p = b2*(x + 0.5)*(x + 0.5) + a2*(y - 1)*(y - 1) - a2*b2
@@ -146,7 +150,11 @@ def bresenham_elipse(tela, xc, yc, a, b, cor):
             x += 1
             p = p + 2*b2*x - 2*a2*y + a2
 
-        setPixel_simetria_elipse(tela, xc, yc, x, y, cor)
+        lista_pontos = get_simetria_elipse(xc, yc, x, y)
+        for ponto in lista_pontos:
+            pontos_elipse.append(ponto)
+    
+    return pontos_elipse
 
 
 def boundary_fill(tela, x, y, boundary_color, fill_color):
