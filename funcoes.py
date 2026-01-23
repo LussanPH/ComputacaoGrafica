@@ -1,12 +1,12 @@
 import math
 from constantes import largura, altura
-
-
 def setPixel(tela, x, y, cor):#Desenha um pixel
-    if x < 0 or x > largura or y < 0 or y > altura:
+    x1=int(round(x))
+    y1=int(round(y))
+    if x1 < 0 or x1 >= largura or y1 < 0 or y1 >= altura:
         return
     else:
-        tela.set_at((x, y), cor)
+        tela.set_at((x1, y1), cor)
 
 
 def dda(tela, x0, x1, y0, y1, cor):
@@ -175,8 +175,8 @@ def boundary_fill(tela, x, y, boundary_color, fill_color):
 
 def scanline(tela, pontos, cor):
     ys = [p[1] for p in pontos]
-    ymin = max(0, min(ys))
-    ymax = min(altura - 1, max(ys))
+    ymin = int(max(0, min(ys)))
+    ymax = int(min(altura - 1, max(ys)))
     n = len(pontos)
     for y in range(ymin, ymax + 1):
         intersecoes = []
@@ -329,6 +329,100 @@ def rotacionar(vertices, velocidade_e_sentido, angulo_graus, pivoXY):
     
     return vertices_rotacionados, angulo_graus
 
+def inside_left(p, xmin):
+    return p[0] >= xmin
+
+def inside_right(p, xmax):
+    return p[0] <= xmax
+
+def inside_top(p, ymin):      
+    return p[1] >= ymin
+
+def inside_bottom(p, ymax):
+    return p[1] <= ymax
+
+def intersect_left(p, q, xmin):
+    x1, y1 = p
+    x2, y2 = q
+    y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1)
+    return xmin, int(round(y))
+
+def intersect_right(p, q, xmax):
+    x1, y1 = p
+    x2, y2 = q
+    y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1)
+    return xmax, int(round(y))
+
+def intersect_top(p, q, ymin):
+    x1, y1 = p
+    x2, y2 = q
+    x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1)
+    return int(round(x)), ymin
+
+def intersect_bottom(p, q, ymax):
+    x1, y1 = p
+    x2, y2 = q
+    x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1)
+    return int(round(x)), ymax
 
 
+def sutherland_hodgman(polygon, xmin, ymin, xmax, ymax):
+    output = polygon
 
+    # LEFT
+    input_list = output
+    output = []
+    for i in range(len(input_list)):
+        p = input_list[i - 1]
+        q = input_list[i]
+
+        if inside_left(q, xmin):
+            if not inside_left(p, xmin):
+                output.append(intersect_left(p, q, xmin))
+            output.append(q)
+        elif inside_left(p, xmin):
+            output.append(intersect_left(p, q, xmin))
+
+    # RIGHT
+    input_list = output
+    output = []
+    for i in range(len(input_list)):
+        p = input_list[i - 1]
+        q = input_list[i]
+
+        if inside_right(q, xmax):
+            if not inside_right(p, xmax):
+                output.append(intersect_right(p, q, xmax))
+            output.append(q)
+        elif inside_right(p, xmax):
+            output.append(intersect_right(p, q, xmax))
+
+    # TOP
+    input_list = output
+    output = []
+    for i in range(len(input_list)):
+        p = input_list[i - 1]
+        q = input_list[i]
+
+        if inside_top(q, ymin):
+            if not inside_top(p, ymin):
+                output.append(intersect_top(p, q, ymin))
+            output.append(q)
+        elif inside_top(p, ymin):
+            output.append(intersect_top(p, q, ymin))
+
+    # BOTTOM
+    input_list = output
+    output = []
+    for i in range(len(input_list)):
+        p = input_list[i - 1]
+        q = input_list[i]
+
+        if inside_bottom(q, ymax):
+            if not inside_bottom(p, ymax):
+                output.append(intersect_bottom(p, q, ymax))
+            output.append(q)
+        elif inside_bottom(p, ymax):
+            output.append(intersect_bottom(p, q, ymax))
+
+    return output
