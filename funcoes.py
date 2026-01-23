@@ -66,26 +66,27 @@ def desenhar_poligono(tela, pontos, cor):
         bresenham_reta(tela, x0, x1, y0, y1, cor)
 
 
-def setPixel_simetria_circulo(tela, xc, yc, x, y, cor):
-    setPixel(tela, xc + x, yc + y, cor)
-    setPixel(tela, xc - x, yc + y, cor)
-    setPixel(tela, xc + x, yc - y, cor)
-    setPixel(tela, xc - x, yc - y, cor)
-    setPixel(tela, xc + y, yc + x, cor)
-    setPixel(tela, xc - y, yc + x, cor)
-    setPixel(tela, xc + y, yc - x, cor)
-    setPixel(tela, xc - y, yc - x, cor)
+def get_simetria_circulo(tela, xc, yc, x, y, cor):
+    return [
+        (xc + x, yc + y), (xc - x, yc + y), (xc + x, yc - y),
+        (xc - x, yc - y), (xc + y, yc + x), (xc - y, yc + x),
+        (xc + y, yc - x), (xc - y, yc - x)]
 
 
 def bresenham_circulo(tela, xc, yc, r, cor):
-     x = 0
-     y = r
+    x = 0
+    y = r
 
-     p = 1 - r   # parâmetro de decisão inicial
+    p = 1 - r   # parâmetro de decisão inicial
 
-     setPixel_simetria_circulo(tela, xc, yc, x, y, cor)
+    pontos_circulo = []
 
-     while x < y:
+    lista_pontos = get_simetria_circulo(tela, xc, yc, x, y, cor)
+
+    for ponto in lista_pontos:
+        pontos_circulo.append(ponto)
+
+    while x < y:
         x += 1
 
         if p < 0:
@@ -96,7 +97,11 @@ def bresenham_circulo(tela, xc, yc, r, cor):
             y -= 1
             p = p + 2*(x - y) + 1
 
-        setPixel_simetria_circulo(tela, xc, yc, x, y, cor)
+        lista_pontos = get_simetria_circulo(tela, xc, yc, x, y, cor)
+        for ponto in lista_pontos:
+            pontos_circulo.append(ponto)
+    
+    return pontos_circulo
 
 
 def setPixel_simetria_elipse(tela, xc, yc, x, y, cor):

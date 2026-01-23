@@ -90,11 +90,10 @@ while rodando:
     funcoes.desenhar_poligono(tela, quadrado_rotacionado, BRANCO)'''
 
     #cenario.cenario_padrao(tela)
+    cenario.cenario_ru(tela)
     #cachorro.desenhar_cachorro(tela, 450, 300)
     #pombo.desenhar_pombo(tela,400, 150)
-
-    #jogador.desenhar_jogador(tela, 175, 225)
-    cenario.cenario_ru(tela)
+    jogador.desenhar_jogador(tela, 175, 225)
     
     pygame.display.flip() 
 

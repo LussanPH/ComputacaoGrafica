@@ -24,14 +24,26 @@ def desenhar_jogador(tela, x, y):
     funcoes.scanline(tela, mochila_aumentada, PRETO)
     funcoes.desenhar_poligono(tela, mochila, VERMELHO)
     funcoes.scanline(tela, mochila, VERMELHO)
+    funcoes.escala(mochila, 0.7, 0.7)
+    funcoes.escala(mochila_aumentada, 0.7, 0.7)
 
     #Desenhar cabeça
     distancia_origem = 14
+
     xc_cabeca = x + distancia_origem
     yc_cabeca = y - distancia_origem
     raio_cabeca = int(math.sqrt(distancia_origem**2 + distancia_origem**2))
-    funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca, BRANCO)
-    funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) #Adicionar Grossura
+
+    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca, BRANCO)
+    pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
+    for ponto in pontos_circulo:
+        funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
+
+    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) #Adicionar Grossura
+    pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
+    for ponto in pontos_circulo:
+        funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
+
     funcoes.scanline_fill_circle(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO)
 
     #Desenhar olho
@@ -56,7 +68,7 @@ def desenhar_jogador(tela, x, y):
 
     #Desenhar corpo
     x_fim_corpo_coxa_traseira = x - 50
-    y_fim_corpo_coxa_traseira = y + 75
+    y_fim_corpo_coxa_traseira = y + 65
     funcoes.bresenham_reta(tela, x, x_fim_corpo_coxa_traseira, y, y_fim_corpo_coxa_traseira, BRANCO)
     funcoes.bresenham_reta(tela, x, x_fim_corpo_coxa_traseira, y+1, y_fim_corpo_coxa_traseira+1, BRANCO) #Adicionar Grossura
 
@@ -67,9 +79,9 @@ def desenhar_jogador(tela, x, y):
     funcoes.bresenham_reta(tela, x_fim_corpo_coxa_traseira, x_fim_perna_tras, y_fim_corpo_coxa_traseira+1, y_fim_perna_tras+1, BRANCO) #Adicionar Grossura
 
     #Desenhar coxa da frente
-    x_inicio_coxa_frente = x - 32
+    x_inicio_coxa_frente = x - 37
     y_inicio_coxa_frente = y + 50
-    x_fim_coxa_frente = x_inicio_coxa_frente + 35
+    x_fim_coxa_frente = x_inicio_coxa_frente + 30
     y_fim_coxa_frente = y_inicio_coxa_frente - 5
     funcoes.bresenham_reta(tela, x_inicio_coxa_frente, x_fim_coxa_frente, y_inicio_coxa_frente, y_fim_coxa_frente, BRANCO)
     funcoes.bresenham_reta(tela, x_inicio_coxa_frente, x_fim_coxa_frente, y_inicio_coxa_frente+1, y_fim_coxa_frente+1, BRANCO) #Adicionar Grossura
