@@ -1,18 +1,35 @@
 import funcoes
-from constantes import BRANCO, PRETO, AZUL, VERMELHO
+from constantes import BRANCO, PRETO, AZUL, VERMELHO, CARAMELO, CARAMELO_ESCURO
 import math
+import pygame
 
 def desenhar_jogador(tela, x, y):
+    tempo = pygame.time.get_ticks()
     
+    velocidade_anim = 0.005 
+    amplitude_anim = 60
+    
+    oscilacao = math.sin(tempo * velocidade_anim) * amplitude_anim
+    angulo = -20 + oscilacao
+    angulo_negativo = -20 - oscilacao
+
+    #Braço de tras
+    braco_tras = [(x + 4, y - 4), (x + 6, y), (x - 12, y + 20), (x - 14, y + 16)]
+    
+    braco_tras = funcoes.rotacionar(braco_tras, angulo, (x, y))
+    braco_tras = funcoes.transladar_pontos(braco_tras, -10, 10)
+    funcoes.desenhar_poligono(tela, braco_tras, CARAMELO_ESCURO)
+    funcoes.scanline(tela, braco_tras, CARAMELO_ESCURO)
+
     #Desenhar Mochila
     x_superior_direito = x - 10
     y_superior_direito = y + 10
     x_superior_esquerdo = x - 20
-    y_superior_esquerdo = y
-    x_inferior_direito = x - 30
+    y_superior_esquerdo = y + 5
+    x_inferior_direito = x - 25
     y_inferior_direito = y + 40
-    x_inferior_esquerdo = x - 40
-    y_inferior_esquerdo = y + 30
+    x_inferior_esquerdo = x - 34
+    y_inferior_esquerdo = y + 37
     mochila = [
         (x_superior_direito, y_superior_direito),
         (x_superior_esquerdo, y_superior_esquerdo),
@@ -20,8 +37,10 @@ def desenhar_jogador(tela, x, y):
         (x_inferior_direito, y_inferior_direito)
     ]
     mochila_aumentada = funcoes.escala(mochila, 1.05, 1.05)
+    mochila_aumentada = funcoes.transladar_pontos(mochila_aumentada, 10, -7)
     funcoes.desenhar_poligono(tela, mochila_aumentada, PRETO)
     funcoes.scanline(tela, mochila_aumentada, PRETO)
+    mochila = funcoes.transladar_pontos(mochila, 10, -7)
     funcoes.desenhar_poligono(tela, mochila, VERMELHO)
     funcoes.scanline(tela, mochila, VERMELHO)
 
@@ -35,13 +54,11 @@ def desenhar_jogador(tela, x, y):
 
     pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca, BRANCO)
     pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
-    pontos_circulo = funcoes.transladar_pontos(pontos_circulo, -13, 13)
     for ponto in pontos_circulo:
         funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
 
     pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) #Adicionar Grossura
     pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
-    pontos_circulo = funcoes.transladar_pontos(pontos_circulo, -13, 13)
     for ponto in pontos_circulo:
         funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
         lista_x_pontos.append(ponto[0])
@@ -49,9 +66,6 @@ def desenhar_jogador(tela, x, y):
     x_max_direita = max(lista_x_pontos)
     x_max_esquerda = min(lista_x_pontos)
     raio_escalonado = int((abs(x_max_direita - x_max_esquerda))/2)
-
-    xc_cabeca -= 13
-    yc_cabeca += 13
 
     funcoes.scanline_fill_circle(tela, xc_cabeca, yc_cabeca, raio_escalonado, BRANCO)
 
@@ -64,12 +78,8 @@ def desenhar_jogador(tela, x, y):
     raio_olho = 2
 
     pontos_circulo = funcoes.bresenham_circulo(tela, xc_olho, yc_olho, raio_olho, PRETO)
-    pontos_circulo = funcoes.transladar_pontos(pontos_circulo, -13, 13)
     for ponto in pontos_circulo:
         funcoes.setPixel(tela, ponto[0], ponto[1], PRETO)
-
-    xc_olho -= 13
-    yc_olho += 13
 
     funcoes.scanline_fill_circle(tela, xc_olho, yc_olho, raio_olho, PRETO)
 
@@ -89,140 +99,33 @@ def desenhar_jogador(tela, x, y):
     funcoes.bresenham_reta(tela, x_fim_pe_oculos, x_fim_oculos, yc_olho, y_fim_oculos, AZUL)
 
     #Desenhar corpo
-    x_fim_corpo_coxa_traseira = x - 50
-    y_fim_corpo_coxa_traseira = y + 65
-    pontos_escalonados = funcoes.escala([(x, y),
-                                         (x_fim_corpo_coxa_traseira, y_fim_corpo_coxa_traseira)], 0.7, 0.7)
-    funcoes.bresenham_reta(tela,
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0], 
-        pontos_escalonados[0][1], 
-        pontos_escalonados[1][1], BRANCO)
+    corpo = [(x + 4, y - 4), (x + 6, y), (x - 18, y + 52), (x - 20, y + 50)]
 
-    funcoes.bresenham_reta(tela, 
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0],
-        pontos_escalonados[0][1]+1,
-        pontos_escalonados[1][1]+1, BRANCO) #Adicionar Grossura
-    
-    #Desenhar perna de trás
-    x_fim_perna_tras = x_fim_corpo_coxa_traseira - 30
-    y_fim_perna_tras = y_fim_corpo_coxa_traseira - 15
-    pontos_escalonados = funcoes.escala([(x_fim_corpo_coxa_traseira, y_fim_corpo_coxa_traseira), 
-                                         (x_fim_perna_tras, y_fim_perna_tras)], 0.7, 0.7)
-    
-    pontos_escalonados = funcoes.transladar_pontos(pontos_escalonados, 12, -5)
+    corpo = funcoes.transladar_pontos(corpo, 0, -2)
+    funcoes.desenhar_poligono(tela, corpo, BRANCO)
+    funcoes.scanline(tela, corpo, BRANCO)
 
-    funcoes.bresenham_reta(tela,
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0], 
-        pontos_escalonados[0][1], 
-        pontos_escalonados[1][1], BRANCO)
-    
-    funcoes.bresenham_reta(tela, 
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0],
-        pontos_escalonados[0][1]+1,
-        pontos_escalonados[1][1]+1, BRANCO) #Adicionar Grossura
+    #Perna de trás
+    perna_tras = [(x + 4, y - 4), (x + 6, y), (x - 15, y + 30), (x - 17, y + 26)]
 
-    #Desenhar coxa da frente
-    x_inicio_coxa_frente = x - 37
-    y_inicio_coxa_frente = y + 50
-    x_fim_coxa_frente = x_inicio_coxa_frente + 30
-    y_fim_coxa_frente = y_inicio_coxa_frente - 5
-    pontos_escalonados = funcoes.escala([(x_inicio_coxa_frente, y_inicio_coxa_frente), 
-                                         (x_fim_coxa_frente, y_fim_coxa_frente)], 0.7, 0.7)
+    perna_tras = funcoes.rotacionar(perna_tras, angulo_negativo, (x, y))
+    perna_tras = funcoes.transladar_pontos(perna_tras, -25, 50)
+    funcoes.desenhar_poligono(tela, perna_tras, CARAMELO_ESCURO)
+    funcoes.scanline(tela, perna_tras, CARAMELO_ESCURO)
     
-    pontos_escalonados = funcoes.transladar_pontos(pontos_escalonados, -5, 0)
-
-    funcoes.bresenham_reta(tela,
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0], 
-        pontos_escalonados[0][1], 
-        pontos_escalonados[1][1], BRANCO)
+    #Perna da frente
+    perna_frente = [(x + 4, y - 4), (x + 6, y), (x - 15, y + 30), (x - 17, y + 26)]
     
-    funcoes.bresenham_reta(tela, 
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0],
-        pontos_escalonados[0][1]+1,
-        pontos_escalonados[1][1]+1, BRANCO) #Adicionar Grossura #Adicionar Grossura
+    perna_frente = funcoes.rotacionar(perna_frente, angulo, (x, y))
+    perna_frente = funcoes.transladar_pontos(perna_frente, -18, 52)
+    funcoes.desenhar_poligono(tela, perna_frente, CARAMELO)
+    funcoes.scanline(tela, perna_frente, CARAMELO)
 
-    #Desenhar perna da frente
-    x_fim_perna_frente = x_fim_coxa_frente - 20
-    y_fim_perna_frente = y_fim_coxa_frente + 35
-    pontos_escalonados = funcoes.escala([(x_fim_coxa_frente, y_fim_coxa_frente),
-                                         (x_fim_perna_frente, y_fim_perna_frente)], 0.7, 0.7)
-    
-    pontos_escalonados = funcoes.transladar_pontos(pontos_escalonados, -6, -5)
-    funcoes.bresenham_reta(tela,
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0], 
-        pontos_escalonados[0][1], 
-        pontos_escalonados[1][1], BRANCO)
-    
-    funcoes.bresenham_reta(tela, 
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0],
-        pontos_escalonados[0][1]+1,
-        pontos_escalonados[1][1]+1, BRANCO) #Adicionar Grossura
+    #Braço da frente 
+    braco_frente = [(x + 4, y - 4), (x + 6, y), (x - 12, y + 20), (x - 14, y + 16)]
 
-    #Desenhar braços
-    x_braco_tras = x - 30
-    x_braco_frente = x + 10
-    y_braco_frente = y + 30
-    pontos_escalonados = funcoes.escala([(x_braco_tras, y),
-                                         (x_braco_frente, y_braco_frente)], 0.7, 0.7)
-    funcoes.bresenham_reta(tela,
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0], 
-        pontos_escalonados[0][1], 
-        pontos_escalonados[1][1], BRANCO)
-    
-    funcoes.bresenham_reta(tela, 
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0],
-        pontos_escalonados[0][1]+1,
-        pontos_escalonados[1][1]+1, BRANCO) #Adicionar Grossura
-
-    #Desenhar antebraço de trás
-    x_fim_antebraco_tras = x_braco_tras - 15
-    y_fim_antebraco_tras = y + 10
-    pontos_escalonados = funcoes.escala([(x_braco_tras, y), 
-                                         (x_fim_antebraco_tras, y_fim_antebraco_tras)], 0.7, 0.7)
-    
-    pontos_escalonados = funcoes.transladar_pontos(pontos_escalonados, 8, 2)
-
-    funcoes.bresenham_reta(tela,
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0], 
-        pontos_escalonados[0][1], 
-        pontos_escalonados[1][1], BRANCO)
-    
-    funcoes.bresenham_reta(tela, 
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0],
-        pontos_escalonados[0][1]+1,
-        pontos_escalonados[1][1]+1, BRANCO) #Adicionar Grossura
-
-    #Desenhar antebraço da frente
-    x_fim_antebraco_frente = x_braco_frente + 15
-    y_fim_antebraco_frente = y_braco_frente - 10
-    pontos_escalonados = funcoes.escala([(x_braco_frente, y_braco_frente),
-                                         (x_fim_antebraco_frente, y_fim_antebraco_frente)], 0.7, 0.7)
-    
-    pontos_escalonados = funcoes.transladar_pontos(pontos_escalonados, -7, -2)
-
-    funcoes.bresenham_reta(tela,
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0], 
-        pontos_escalonados[0][1], 
-        pontos_escalonados[1][1], BRANCO)
-    
-    funcoes.bresenham_reta(tela, 
-        pontos_escalonados[0][0], 
-        pontos_escalonados[1][0],
-        pontos_escalonados[0][1]+1,
-        pontos_escalonados[1][1]+1, BRANCO) #Adicionar Grossura
-
-
+    braco_frente = funcoes.rotacionar(braco_frente, angulo_negativo, (x, y))
+    braco_frente = funcoes.transladar_pontos(braco_frente, -5, 15)
+    funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
+    funcoes.scanline(tela, braco_frente, CARAMELO)
     
