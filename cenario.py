@@ -36,22 +36,18 @@ def desenhar_objeto_movel(tela, pontos, tx, cor, preencher=True):
 
 
 # ---------- UPDATE ----------(Busca melhorar a animação)
-def atualizar():
-    global scroll_x, final_atingido, ultimo_tempo
-
-    agora = pygame.time.get_ticks()
-    dt = (agora - ultimo_tempo) / 1000.0
-    ultimo_tempo = agora
+def atualizar(dt):
+    global scroll_x, final_atingido
 
     if not final_atingido:
         scroll_x += velocidade_movimento * dt
+        
         if scroll_x >= limite_scroll:
             scroll_x = limite_scroll
             final_atingido = True
-
 # A função de desenhar tem como função desenhar        
 def desenhar(tela):
-    altura_chao= altura-altura/3
+    altura_chao= altura-altura//4
     # --- DESENHO DO CHÃO ---
     chao_pts = [(0, altura_chao), (x_ru_inicial + largura_ru, altura_chao), (x_ru_inicial + largura_ru, altura), (0, altura)]
     desenhar_objeto_movel(tela, chao_pts, -scroll_x, CINZA)
@@ -94,3 +90,20 @@ def desenhar(tela):
         font = pygame.font.SysFont(None, 60, bold=True)
         text_surf = font.render("RU", True, PRETO)
         tela.blit(text_surf, (pos_x_texto - 30, 120))
+        
+def desenhar_start(tela):
+    altura_chao= altura-altura//4
+    # --- DESENHO DO CHÃO ---
+    chao_pts = [(0, altura_chao), (x_ru_inicial + largura_ru, altura_chao), (x_ru_inicial + largura_ru, altura), (0, altura)]
+    funcoes.desenhar_poligono(tela, chao_pts, CINZA)
+    funcoes.scanline(tela, chao_pts, CINZA)
+
+    # --- DESENHO DAS COLUNAS---
+    espacamento= largura//4
+    for i in range(1, 4):
+        x_base = i * espacamento  # Mais próximas uma da outra
+        coluna = [(x_base-20, 0), (x_base+20, 0), (x_base+20, altura_chao), (x_base-20, altura_chao)]
+        base = [(x_base-30, altura_chao-17), (x_base+30, altura_chao-17), (x_base+30, altura_chao), (x_base-30, altura_chao)]
+        
+        desenhar_objeto_movel(tela, coluna, -scroll_x, CINZA)
+        desenhar_objeto_movel(tela, base, -scroll_x, CINZA_ESCURO)

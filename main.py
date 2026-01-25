@@ -1,6 +1,7 @@
 import pygame
 import sys
 import funcoes
+import telas
 import jogador
 import cachorro
 import cenario
@@ -23,28 +24,30 @@ pygame.init() #Inicialização
 tela = pygame.display.set_mode((largura, altura)) #Tamanho da Janela
 pygame.display.set_caption("Djonga RUn") #Título da janela
 
+telas.tela_start(tela)
 clock = pygame.time.Clock()#Determina o FPS
 
 angulo_jogador = 0
 
 while rodando:
+
+    dt = clock.tick(60) / 1000.0 
+
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             rodando = False
     
     tela.fill(AZUL)
 
-    cenario.atualizar()
+    cenario.atualizar(dt) 
     cenario.desenhar(tela)
-    cachorro.processar_cachorros(tela,lista_cachorros)
+
+    cachorro.processar_cachorros(tela, lista_cachorros)
     pombo.processar_pombos(tela, lista_pombos)
+    
     jogador.desenhar_jogador(tela, 175, 225)
 
-    dt = clock.tick(60)
-    print(dt)
-
-    pygame.display.flip() 
-
+    pygame.display.flip()
 #Finalização
 pygame.quit()
 sys.exit()
