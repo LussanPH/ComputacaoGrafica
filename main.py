@@ -15,17 +15,23 @@ lista_pombos = [
 ]
 
 lista_cachorros = [
-    {"x": 600, "y": 280, "fase": 0, "vel": 4}
+    {"x": 600, "y": 280, "fase": 0, "vel": 4, "hitbox":(10, 12, 12, 12)}
 ]
 
 pygame.init()
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Djonga Run")
 
+textura = pygame.image.load("Cientista.png")
+
 telas.tela_start(tela)
 clock = pygame.time.Clock()
 
 rodando = True
+
+gravidade = 1
+pulando = False
+velocidade_pulo = -20
 
 while rodando:
     dt = clock.tick(60) / 1000.0 
@@ -41,9 +47,13 @@ while rodando:
 
     cachorro.processar_cachorros(tela, lista_cachorros)
     pombo.processar_pombos(tela, lista_pombos)
+
+    if pulando:
+        jogador.desenhar_pulo(tela, 175, 225, textura, velocidade_pulo)
+
     
     x_player, y_player = 175, 225
-    jogador.desenhar_jogador(tela, x_player, y_player)
+    jogador.desenhar_jogador(tela, x_player, y_player, textura)
     jogador.desenhar_vida(tela,2)
     
     hb_p = (x_player - 30, y_player - 30, 60, 80) 

@@ -3,7 +3,7 @@ from constantes import BRANCO, PRETO, AZUL, VERMELHO, CARAMELO, CARAMELO_ESCURO
 import math
 import pygame
 
-def desenhar_jogador(tela, x, y):
+def desenhar_jogador(tela, x, y, textura):
     tempo = pygame.time.get_ticks()
     
     velocidade_anim = 0.005 
@@ -44,6 +44,13 @@ def desenhar_jogador(tela, x, y):
     funcoes.desenhar_poligono(tela, mochila, VERMELHO)
     funcoes.scanline(tela, mochila, VERMELHO)
 
+    #Desenhar corpo
+    corpo = [(x + 4, y - 4), (x + 6, y), (x - 18, y + 52), (x - 20, y + 50)]
+
+    corpo = funcoes.transladar_pontos(corpo, 0, -2)
+    funcoes.desenhar_poligono(tela, corpo, BRANCO)
+    funcoes.scanline(tela, corpo, BRANCO)
+    
     #Desenhar cabeça
     distancia_origem = 14
     lista_x_pontos = [] #Vai ser necessário para calcular o novo raio
@@ -67,8 +74,8 @@ def desenhar_jogador(tela, x, y):
     x_max_esquerda = min(lista_x_pontos)
     raio_escalonado = int((abs(x_max_direita - x_max_esquerda))/2)
 
-    funcoes.scanline_fill_circle(tela, xc_cabeca, yc_cabeca, raio_escalonado, BRANCO)
-
+    funcoes.setTexturaCabeca(tela, textura, xc_cabeca, yc_cabeca, raio_cabeca+1)
+    '''
     #Desenhar olho
     distancia_origem_x = 20
     distancia_origem_y = 15
@@ -97,13 +104,7 @@ def desenhar_jogador(tela, x, y):
     x_fim_oculos = x_fim_pe_oculos - 3
     y_fim_oculos = yc_olho + 3
     funcoes.bresenham_reta(tela, x_fim_pe_oculos, x_fim_oculos, yc_olho, y_fim_oculos, AZUL)
-
-    #Desenhar corpo
-    corpo = [(x + 4, y - 4), (x + 6, y), (x - 18, y + 52), (x - 20, y + 50)]
-
-    corpo = funcoes.transladar_pontos(corpo, 0, -2)
-    funcoes.desenhar_poligono(tela, corpo, BRANCO)
-    funcoes.scanline(tela, corpo, BRANCO)
+    '''
 
     #Perna de trás
     perna_tras = [(x + 4, y - 4), (x + 6, y), (x - 15, y + 30), (x - 17, y + 26)]
@@ -128,6 +129,9 @@ def desenhar_jogador(tela, x, y):
     braco_frente = funcoes.transladar_pontos(braco_frente, -5, 15)
     funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
     funcoes.scanline(tela, braco_frente, CARAMELO)
+
+def desenhar_pulo(tela, x, y, textura, velocidade):
+
     
 def desenhar_vida(tela,vidas):
     cor_coracao = VERMELHO

@@ -434,3 +434,24 @@ def intersecao(x1,y1,w1,h1,x2,y2,w2,h2):
         has_collision = True
 
     return has_collision    
+
+def setTexturaCabeca(tela, textura, x_centro, y_centro, raio):
+    largura_textura, altura_textura = textura.get_size()
+    diametro = raio*2
+
+    for y in range(y_centro - raio, y_centro + raio):
+        for x in range(x_centro - raio, x_centro + raio):
+            distancia_ao_quadrado = (x - x_centro)**2 + (y - y_centro)**2
+            
+            if distancia_ao_quadrado <= raio**2:
+                x_minimo = x_centro - raio
+                y_minimo = y_centro - raio
+
+                u = (x - x_minimo)/diametro
+                v = (y - y_minimo)/diametro
+
+                tx = int(u * (largura_textura - 1))
+                ty = int(v * (altura_textura - 1))
+            
+                cor = textura.get_at((tx, ty))
+                tela.set_at((x, y), cor)
