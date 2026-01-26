@@ -5,32 +5,29 @@ import telas
 import jogador
 import cachorro
 import cenario
-from constantes import largura, altura, BRANCO, PRETO,AZUL, LARANJA
+from constantes import largura, altura, AZUL
 import pombo
 
+# --- Inicialização da Lista de Obstáculos ---
 lista_pombos = [
     {"x": 700, "y": 100, "fase": 0, "vel": 4},
-    {"x": 900, "y": 150, "fase": 30, "vel": 2} # Esse está em outra fase da batida
+    {"x": 900, "y": 150, "fase": 30, "vel": 2}
 ]
 
 lista_cachorros = [
-    {"x": 600, "y": 280, "fase": 0, "vel": 3}
+    {"x": 600, "y": 280, "fase": 0, "vel": 4}
 ]
 
-rodando = True 
-
-pygame.init() #Inicialização
-
-tela = pygame.display.set_mode((largura, altura)) #Tamanho da Janela
-pygame.display.set_caption("Djonga RUn") #Título da janela
+pygame.init()
+tela = pygame.display.set_mode((largura, altura))
+pygame.display.set_caption("Djonga Run")
 
 telas.tela_start(tela)
-clock = pygame.time.Clock()#Determina o FPS
+clock = pygame.time.Clock()
 
-angulo_jogador = 0
+rodando = True
 
 while rodando:
-
     dt = clock.tick(60) / 1000.0 
 
     for evento in pygame.event.get():
@@ -45,11 +42,23 @@ while rodando:
     cachorro.processar_cachorros(tela, lista_cachorros)
     pombo.processar_pombos(tela, lista_pombos)
     
-    jogador.desenhar_jogador(tela, 175, 225)
+    x_player, y_player = 175, 225
+    jogador.desenhar_jogador(tela, x_player, y_player)
+    
+    hb_p = (x_player - 30, y_player - 30, 60, 80) 
 
+    pontos_p = [
+        (hb_p[0], hb_p[1]),                      # Topo-Esquerdo
+        (hb_p[0] + hb_p[2], hb_p[1]),             # Topo-Direito
+        (hb_p[0] + hb_p[2], hb_p[1] + hb_p[3]),    # Baixo-Direito
+        (hb_p[0], hb_p[1] + hb_p[3])              # Baixo-Esquerdo
+    ]
+    funcoes.desenhar_poligono(tela, pontos_p, (0, 255, 0))
+    for cao in lista_cachorros:
+        if "hitbox" in cao:
+            if funcoes.intersecao(*hb_p, *cao["hitbox"]):
+                print("HIT: Djonga vs Cachorro")
     pygame.display.flip()
-#Finalização
+
 pygame.quit()
 sys.exit()
-
-    

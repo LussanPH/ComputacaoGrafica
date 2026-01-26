@@ -426,3 +426,11 @@ def sutherland_hodgman(polygon, xmin, ymin, xmax, ymax):
             output.append(intersect_bottom(p, q, ymax))
 
     return output
+
+
+def intersecao(x1,y1,w1,h1,x2,y2,w2,h2):
+    has_collision = False
+    if (x1 < x2 + w2 and x1 + w1 > x2 and y1 < y2 + h2 and y1 +h1 > y2 ):
+        has_collision = True
+
+    return has_collision    
