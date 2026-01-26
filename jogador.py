@@ -129,3 +129,25 @@ def desenhar_jogador(tela, x, y):
     funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
     funcoes.scanline(tela, braco_frente, CARAMELO)
     
+def desenhar_vida(tela,vidas):
+    cor_coracao = VERMELHO
+    espacamento = 35
+    x_inicial = 40
+    y_pos = 40
+
+    for i in range(vidas+1):
+        x = x_inicial + (i * espacamento)
+        
+        # 1. Parte de cima (Dois círculos pequenos)
+        # Círculo da esquerda
+        funcoes.scanline_fill_circle(tela, x - 7, y_pos, 7, cor_coracao)
+        # Círculo da direita
+        funcoes.scanline_fill_circle(tela, x + 7, y_pos, 7, cor_coracao)
+        
+        # 2. Parte de baixo (Um triângulo invertido)
+        triangulo = [
+            (x - 14, y_pos + 2), 
+            (x + 14, y_pos + 2), 
+            (x, y_pos + 15)
+        ]
+        funcoes.scanline(tela, triangulo, cor_coracao)

@@ -44,6 +44,7 @@ while rodando:
     
     x_player, y_player = 175, 225
     jogador.desenhar_jogador(tela, x_player, y_player)
+    jogador.desenhar_vida(tela,2)
     
     hb_p = (x_player - 30, y_player - 30, 60, 80) 
 
