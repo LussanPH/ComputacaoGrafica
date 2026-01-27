@@ -1,32 +1,70 @@
 import pygame
-import funcoes
-from constantes import *
+import colisoes
+import cachorro
+import pombo
 import jogador
+from constantes import *
 
+# Constantes de Física
 GRAVIDADE = 1
 FORCA_PULO = -17
 Y_CHAO = 225
 
+def inicializar_estado():
+    """Cria o dicionário inicial com toda a 'alma' do jogo."""
+    pombos, cachorros = resetar_jogo()
+    return {
+        "player": {
+            "x": 175,
+            "y": Y_CHAO,
+            "pulando": False,
+            "velocidade": 0,
+            "vidas": 2, # Coração 0, 1 e 2
+            "inv_timer": 0
+        },
+        "obstaculos": {
+            "pombos": pombos,
+            "cachorros": cachorros
+        },
+        "status": "JOGANDO"
+    }
 
-def iniciar_pulo(estado):
-    if not estado["pulando"]:
-        estado["pulando"] = True
-        estado["velocidade"] = FORCA_PULO
+def processar_logica(tela, estado, dt, teclas):
+    """Executa a matemática e as colisões. Retorna True se houve um hit."""
+    p = estado["player"]
+    obs = estado["obstaculos"]
 
+    # 1. Pulo (Entrada e Física)
+    if teclas[pygame.K_w] and not p["pulando"]:
+        p["pulando"] = True
+        p["velocidade"] = FORCA_PULO
+    
+    if p["pulando"]:
+        p["velocidade"] += GRAVIDADE
+        p["y"] += p["velocidade"]
+        if p["y"] >= Y_CHAO:
+            p["y"] = Y_CHAO
+            p["pulando"] = False
+            p["velocidade"] = 0
 
-def atualizar_pulo(estado):
-    if estado["pulando"]:
-        estado["velocidade"] += GRAVIDADE
-        estado["y"] += estado["velocidade"]
+    # 2. Timers (Invencibilidade)
+    if p["inv_timer"] > 0:
+        p["inv_timer"] -= dt
 
-    if estado["y"] >= Y_CHAO:
-        estado["y"] = Y_CHAO
-        estado["pulando"] = False
-        estado["velocidade"] = 0
+    # 3. Movimentação dos Inimigos
+    cachorro.processar_cachorros(tela, obs["cachorros"])
+    pombo.processar_pombos(tela, obs["pombos"])
+
+    # 4. Colisões
+    if p["inv_timer"] <= 0:
+        hb_djonga = jogador.calcular_hitbox_jogador(p["x"], p["y"])
+        if colisoes.verificar_colisoes_gerais(hb_djonga, obs["cachorros"], obs["pombos"]):
+            p["vidas"] -= 1
+            p["inv_timer"] = 2.0 # 2 segundos de folga
+            return True
+    return False
 
 def resetar_jogo():
-    """Função para resetar as posições dos elementos ao reiniciar o jogo"""
-    #Não testei sem, mas pelo que eu pesquisei parece ser recomendada
     pombos = [
         {"x": 700, "y": 100, "fase": 0, "vel": 4},
         {"x": 900, "y": 150, "fase": 30, "vel": 2}
