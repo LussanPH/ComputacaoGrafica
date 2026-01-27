@@ -14,7 +14,12 @@ clock = pygame.time.Clock()
 
 textura = pygame.image.load("Cientista.png")
 estado_inicial = "MENU"
+<<<<<<< HEAD
 estado_dados = None 
+=======
+estado_dados = None # O dicionário do jogo.py
+velocidade_x_minimapa = 3
+>>>>>>> 3067dc3 (Added viewport)
 
 rodando = True
 # --- MANTENHA OS IMPORTS ---
@@ -58,7 +63,6 @@ while rodando:
         
         cenario.atualizar(dt)
         cenario.desenhar(tela)
-        funcoes.viewport(tela)
 
         jogo.processar_logica(tela, estado_dados, dt, teclas)
         
@@ -74,6 +78,12 @@ while rodando:
             jogador.desenhar_pulo(tela, p["x"], p["y"], textura, p["velocidade"], protegido)
         else:
             jogador.desenhar_jogador(tela, p["x"], p["y"], textura, protegido)
+
+        # 5. Desenho do minimapa com o jogador
+        mover_minimapa = funcoes.viewport(tela, p["posicao_viewport_x"], p["posicao_viewport_y"])
+
+        if mover_minimapa:
+            p["posicao_viewport_x"] += velocidade_x_minimapa
 
     pygame.display.flip()
 

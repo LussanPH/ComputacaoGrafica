@@ -456,10 +456,30 @@ def setTexturaCabeca(tela, textura, x_centro, y_centro, raio):
                 cor = textura.get_at((tx, ty))
                 tela.set_at((x, y), cor)
 
-def viewport(tela):
-    quadrado = [(5, (altura - altura//6)), (5, altura - 10), (largura//6, altura - 10), (largura//6, (altura - altura//6))]
+def viewport(tela, x, y):
+    quadrado = [(15, int((altura - altura//10))), (15, altura - 35), (int(largura//4), altura - 35), (int(largura//4), (altura - int(altura//10)))]
+    haste_chegada =  [(int(largura//4) - 4, int((altura - altura//10)) - 20),
+                (int(largura//4) - 4, int((altura - altura//10)) - 1),
+                (int(largura//4) - 2, int((altura - altura//10)) - 1),
+                (int(largura//4) - 2, int((altura - altura//10)) - 20)]
+    bandeira_chegada = [(int(largura//4) - 1, int((altura - altura//10)) - 20),
+                        (int(largura//4) - 1, int((altura - altura//10)) - 10),
+                        (int(largura//4) + 10, int((altura - altura//10)) - 15)]
+    circulo_jogador = bresenham_circulo(tela, int(x), y, 2, BRANCO)
 
     desenhar_poligono(tela, quadrado, PRETO)
+    desenhar_poligono(tela, haste_chegada, BRANCO)
+    desenhar_poligono(tela, bandeira_chegada, VERMELHO)
+    scanline(tela, quadrado, PRETO)
+    scanline(tela, haste_chegada, BRANCO)
+    scanline(tela, bandeira_chegada, VERMELHO)
+
+    desenhar_poligono(tela, circulo_jogador, BRANCO)
+
+    if not x >= int(largura//4) - 4:
+        return True
+    else:
+        return False
     
 def interpola_cor(c1, c2, t):
     r = int(c1[0] + (c2[0]-c1[0])*t)
