@@ -247,3 +247,8 @@ def desenhar_game_over(tela):
     center_y = y_topo // 2
     text_rect = text_surf.get_rect(center=(center_x, center_y))
     tela.blit(text_surf, text_rect)
+
+def resetar():
+    global scroll_x, final_atingido
+    scroll_x = 0.0
+    final_atingido = False

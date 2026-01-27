@@ -19,7 +19,7 @@ def inicializar_estado():
             "y": Y_CHAO,
             "pulando": False,
             "velocidade": 0,
-            "vidas": 2, # Coração 0, 1 e 2
+            "vidas": 1, # Coração 0 e 1 
             "inv_timer": 0
         },
         "obstaculos": {
@@ -60,16 +60,18 @@ def processar_logica(tela, estado, dt, teclas):
         hb_djonga = jogador.calcular_hitbox_jogador(p["x"], p["y"])
         if colisoes.verificar_colisoes_gerais(hb_djonga, obs["cachorros"], obs["pombos"]):
             p["vidas"] -= 1
-            p["inv_timer"] = 2.0 # 2 segundos de folga
+            p["inv_timer"] = 0.8 # 0.8 segundos de folga
             return True
     return False
 
 def resetar_jogo():
     pombos = [
-        {"x": 700, "y": 100, "fase": 0, "vel": 4},
-        {"x": 900, "y": 150, "fase": 30, "vel": 2}
+        {"x": 700, "y": 100, "fase": 0, "vel": 10},
+        {"x": 900, "y": 150, "fase": 30, "vel": 10}
     ]
     cachorros = [
-        {"x": 600, "y": 280, "fase": 0, "vel": 3}
+        {"x": 600, "y": 280, "fase": 0, "vel": 10},
+        {"x": 800, "y": 280, "fase": 0, "vel": 10},
+        {"x": 860, "y": 280, "fase": 0, "vel": 10}
     ]
     return pombos, cachorros

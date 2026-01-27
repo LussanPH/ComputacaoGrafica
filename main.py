@@ -12,49 +12,61 @@ tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Djonga Run")
 clock = pygame.time.Clock()
 
-# Ativos
 textura = pygame.image.load("Cientista.png")
 estado_inicial = "MENU"
-estado_dados = None # O dicionário do jogo.py
+estado_dados = None 
 
 rodando = True
+# --- MANTENHA OS IMPORTS ---
+
 while rodando:
-    # --- MÁQUINA DE ESTADOS ---
+    # 1. EVENTOS GLOBAIS
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            rodando = False
+
+    # --- 2. MÁQUINA DE ESTADOS ---
     if estado_inicial == "MENU":
         telas.tela_start(tela)
-        estado_dados = jogo.inicializar_estado() # Começa tudo do zero
+        # Resets
+        cenario.resetar()              
+        estado_dados = jogo.inicializar_estado() 
+        clock.tick()                   
         estado_inicial = "JOGANDO"
-    
+        continue 
+
     elif estado_inicial == "GAME OVER":
         acao = telas.tela_game_over(tela)
+        
         if acao == "play":
+            cenario.resetar()         
             estado_dados = jogo.inicializar_estado()
+            clock.tick()               
             estado_inicial = "JOGANDO"
+            continue 
         elif acao == "menu":
             estado_inicial = "MENU"
+            continue
 
     elif estado_inicial == "JOGANDO":
+        # Agora o dt será sempre pequeno e correto
         dt = clock.tick(60) / 1000.0
         teclas = pygame.key.get_pressed()
 
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT: rodando = False
-
-        # 1. Desenho de Fundo
+        # PROCESSAMENTO
         tela.fill(AZUL)
+        
         cenario.atualizar(dt)
         cenario.desenhar(tela)
         funcoes.viewport(tela)
 
-        # 2. Lógica delegada ao jogo.py
-        houve_hit = jogo.processar_logica(tela, estado_dados, dt, teclas)
+        jogo.processar_logica(tela, estado_dados, dt, teclas)
         
-        # 3. Verificação de Derrota
         p = estado_dados["player"]
         if p["vidas"] < 0:
             estado_inicial = "GAME OVER"
 
-        # 4. Desenho da Interface e Jogador
+        # --- DESENHOS ---
         jogador.desenhar_vida(tela, p["vidas"])
         protegido = p["inv_timer"] > 0
 
