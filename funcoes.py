@@ -1,5 +1,5 @@
 import math
-from constantes import largura, altura
+from constantes import *
 
 
 def setPixel(tela, x, y, cor):#Desenha um pixel
@@ -455,3 +455,8 @@ def setTexturaCabeca(tela, textura, x_centro, y_centro, raio):
             
                 cor = textura.get_at((tx, ty))
                 tela.set_at((x, y), cor)
+
+def viewport(tela):
+    quadrado = [(5, (altura - altura//6)), (5, altura - 10), (largura//6, altura - 10), (largura//6, (altura - altura//6))]
+
+    desenhar_poligono(tela, quadrado, PRETO)

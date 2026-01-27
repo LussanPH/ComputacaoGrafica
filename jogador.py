@@ -59,52 +59,13 @@ def desenhar_jogador(tela, x, y, textura):
     yc_cabeca = y - distancia_origem
     raio_cabeca = int(math.sqrt(distancia_origem**2 + distancia_origem**2))
 
-    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca, BRANCO)
-    pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
-    for ponto in pontos_circulo:
-        funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
-
-    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) #Adicionar Grossura
+    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) 
     pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
     for ponto in pontos_circulo:
         funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
         lista_x_pontos.append(ponto[0])
-    
-    x_max_direita = max(lista_x_pontos)
-    x_max_esquerda = min(lista_x_pontos)
-    raio_escalonado = int((abs(x_max_direita - x_max_esquerda))/2)
 
     funcoes.setTexturaCabeca(tela, textura, xc_cabeca, yc_cabeca, raio_cabeca+1)
-    '''
-    #Desenhar olho
-    distancia_origem_x = 20
-    distancia_origem_y = 15
-
-    xc_olho = x + distancia_origem_x
-    yc_olho = y - distancia_origem_y
-    raio_olho = 2
-
-    pontos_circulo = funcoes.bresenham_circulo(tela, xc_olho, yc_olho, raio_olho, PRETO)
-    for ponto in pontos_circulo:
-        funcoes.setPixel(tela, ponto[0], ponto[1], PRETO)
-
-    funcoes.scanline_fill_circle(tela, xc_olho, yc_olho, raio_olho, PRETO)
-
-    #Desenhar óculos
-    a = 5
-    b = 8
-
-    pontos_elipse = funcoes.bresenham_elipse(tela, xc_olho, yc_olho, a, b, AZUL)
-    for ponto in pontos_elipse:
-        funcoes.setPixel(tela, ponto[0], ponto[1], VERMELHO)
-
-    x_inicio_pe_oculos = xc_olho - a
-    x_fim_pe_oculos = x_inicio_pe_oculos - 8
-    funcoes.bresenham_reta(tela, x_inicio_pe_oculos, x_fim_pe_oculos, yc_olho, yc_olho, AZUL)
-    x_fim_oculos = x_fim_pe_oculos - 3
-    y_fim_oculos = yc_olho + 3
-    funcoes.bresenham_reta(tela, x_fim_pe_oculos, x_fim_oculos, yc_olho, y_fim_oculos, AZUL)
-    '''
 
     #Perna de trás
     perna_tras = [(x + 4, y - 4), (x + 6, y), (x - 15, y + 30), (x - 17, y + 26)]
@@ -130,9 +91,105 @@ def desenhar_jogador(tela, x, y, textura):
     funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
     funcoes.scanline(tela, braco_frente, CARAMELO)
 
-def desenhar_pulo(tela, x, y, textura, velocidade):
 
+def desenhar_pulo(tela, x, y, textura, velocidade):
+    #Braço de tras
+    braco_tras = [(x + 4, y - 4), (x + 6, y), (x - 12, y + 20), (x - 14, y + 16)]
     
+    if velocidade < 0:
+        braco_tras = funcoes.rotacionar(braco_tras, 30, (x, y))
+    else:
+        braco_tras = funcoes.rotacionar(braco_tras, 90, (x, y))
+
+    braco_tras = funcoes.transladar_pontos(braco_tras, -10, 10)
+    funcoes.desenhar_poligono(tela, braco_tras, CARAMELO_ESCURO)
+    funcoes.scanline(tela, braco_tras, CARAMELO_ESCURO)
+
+    #Desenhar Mochila
+    x_superior_direito = x - 10
+    y_superior_direito = y + 10
+    x_superior_esquerdo = x - 20
+    y_superior_esquerdo = y + 5
+    x_inferior_direito = x - 25
+    y_inferior_direito = y + 40
+    x_inferior_esquerdo = x - 34
+    y_inferior_esquerdo = y + 37
+    mochila = [
+        (x_superior_direito, y_superior_direito),
+        (x_superior_esquerdo, y_superior_esquerdo),
+        (x_inferior_esquerdo, y_inferior_esquerdo),
+        (x_inferior_direito, y_inferior_direito)
+    ]
+    mochila_aumentada = funcoes.escala(mochila, 1.05, 1.05)
+    mochila_aumentada = funcoes.transladar_pontos(mochila_aumentada, 10, -7)
+    funcoes.desenhar_poligono(tela, mochila_aumentada, PRETO)
+    funcoes.scanline(tela, mochila_aumentada, PRETO)
+    mochila = funcoes.transladar_pontos(mochila, 10, -7)
+    funcoes.desenhar_poligono(tela, mochila, VERMELHO)
+    funcoes.scanline(tela, mochila, VERMELHO)
+
+    #Desenhar corpo
+    corpo = [(x + 4, y - 4), (x + 6, y), (x - 18, y + 52), (x - 20, y + 50)]
+
+    corpo = funcoes.transladar_pontos(corpo, 0, -2)
+    funcoes.desenhar_poligono(tela, corpo, BRANCO)
+    funcoes.scanline(tela, corpo, BRANCO)
+    
+    #Desenhar cabeça
+    distancia_origem = 14
+    lista_x_pontos = [] #Vai ser necessário para calcular o novo raio
+
+    xc_cabeca = x + distancia_origem
+    yc_cabeca = y - distancia_origem
+    raio_cabeca = int(math.sqrt(distancia_origem**2 + distancia_origem**2))
+
+    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) 
+    pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
+    for ponto in pontos_circulo:
+        funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
+        lista_x_pontos.append(ponto[0])
+
+    funcoes.setTexturaCabeca(tela, textura, xc_cabeca, yc_cabeca, raio_cabeca+1)
+
+    #Perna de trás
+    perna_tras = [(x + 4, y - 4), (x + 6, y), (x - 15, y + 30), (x - 17, y + 26)]
+
+    perna_tras = funcoes.rotacionar(perna_tras, 30, (x, y))
+
+    if velocidade < 0:
+        perna_tras = funcoes.rotacionar(perna_tras, 30, (x, y))
+    else:
+        perna_tras = funcoes.rotacionar(perna_tras, 70, (x, y))
+
+    perna_tras = funcoes.transladar_pontos(perna_tras, -25, 50)
+    funcoes.desenhar_poligono(tela, perna_tras, CARAMELO_ESCURO)
+    funcoes.scanline(tela, perna_tras, CARAMELO_ESCURO)
+    
+    #Perna da frente
+    perna_frente = [(x + 4, y - 4), (x + 6, y), (x - 15, y + 30), (x - 17, y + 26)]
+    
+    if velocidade < 0:
+        perna_frente = funcoes.rotacionar(perna_frente, -60, (x, y))
+    else:
+        perna_frente = funcoes.rotacionar(perna_frente, -120, (x, y))
+
+    perna_frente = funcoes.transladar_pontos(perna_frente, -18, 52)
+    funcoes.desenhar_poligono(tela, perna_frente, CARAMELO)
+    funcoes.scanline(tela, perna_frente, CARAMELO)
+
+    #Braço da frente 
+    braco_frente = [(x + 4, y - 4), (x + 6, y), (x - 12, y + 20), (x - 14, y + 16)]
+
+    if velocidade < 0:
+        braco_frente = funcoes.rotacionar(braco_frente, -60, (x, y))
+    else:
+        braco_frente = funcoes.rotacionar(braco_frente, -120, (x, y))
+
+    braco_frente = funcoes.transladar_pontos(braco_frente, -5, 15)
+    funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
+    funcoes.scanline(tela, braco_frente, CARAMELO)
+    
+
 def desenhar_vida(tela,vidas):
     cor_coracao = VERMELHO
     espacamento = 35

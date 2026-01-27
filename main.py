@@ -15,7 +15,7 @@ lista_pombos = [
 ]
 
 lista_cachorros = [
-    {"x": 600, "y": 280, "fase": 0, "vel": 4, "hitbox":(10, 12, 12, 12)}
+    {"x": 600, "y": 280, "fase": 0, "vel": 7, "hitbox":(10, 12, 12, 12)}
 ]
 
 pygame.init()
@@ -31,9 +31,13 @@ rodando = True
 
 gravidade = 1
 pulando = False
-velocidade_pulo = -20
+velocidade_pulo = 0
+forca_pulo = -17
+x_player, y_player = 175, 225
 
 while rodando:
+    teclas = pygame.key.get_pressed()
+
     dt = clock.tick(60) / 1000.0 
 
     for evento in pygame.event.get():
@@ -45,15 +49,30 @@ while rodando:
     cenario.atualizar(dt) 
     cenario.desenhar(tela)
 
+    funcoes.viewport(tela)
+
     cachorro.processar_cachorros(tela, lista_cachorros)
     pombo.processar_pombos(tela, lista_pombos)
 
-    if pulando:
-        jogador.desenhar_pulo(tela, 175, 225, textura, velocidade_pulo)
 
+    if not pulando:
+        if teclas[pygame.K_w]:
+            pulando = True
+            velocidade_pulo = forca_pulo
+    else:
+        velocidade_pulo += gravidade
+        y_player += velocidade_pulo
+
+        if y_player >= 225:
+            y_player = 225
+            pulando = False
+            velocidade_pulo = 0
     
-    x_player, y_player = 175, 225
-    jogador.desenhar_jogador(tela, x_player, y_player, textura)
+    if pulando:
+        jogador.desenhar_pulo(tela, x_player, y_player, textura, velocidade_pulo)
+    else:
+        jogador.desenhar_jogador(tela, x_player, y_player, textura)
+
     jogador.desenhar_vida(tela,2)
     
     hb_p = (x_player - 30, y_player - 30, 60, 80) 
