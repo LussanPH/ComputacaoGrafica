@@ -3,8 +3,12 @@ from constantes import BRANCO, PRETO, AZUL, VERMELHO, CARAMELO, CARAMELO_ESCURO
 import math
 import pygame
 
-def desenhar_jogador(tela, x, y, textura):
+def desenhar_jogador(tela, x, y, textura,invencivel = False):
     tempo = pygame.time.get_ticks()
+
+    # Ficar invisível após a colisão
+    if invencivel and (tempo//100) % 2 == 0:
+        return
     
     velocidade_anim = 0.005 
     amplitude_anim = 60
@@ -92,7 +96,14 @@ def desenhar_jogador(tela, x, y, textura):
     funcoes.scanline(tela, braco_frente, CARAMELO)
 
 
-def desenhar_pulo(tela, x, y, textura, velocidade):
+def desenhar_pulo(tela, x, y, textura, velocidade, invencivel = False):
+    
+    tempo = pygame.time.get_ticks()
+
+    # Ficar invisível no pulo
+    if invencivel and (tempo//100) % 2 == 0:
+        return
+
     #Braço de tras
     braco_tras = [(x + 4, y - 4), (x + 6, y), (x - 12, y + 20), (x - 14, y + 16)]
     
@@ -212,3 +223,12 @@ def desenhar_vida(tela,vidas):
             (x, y_pos + 15)
         ]
         funcoes.scanline(tela, triangulo, cor_coracao)
+
+def calcular_hitbox_jogador(x, y):
+    # 1. HITBOX DO CORPO
+    corpo = (x - 20, y - 4, 26, 56)
+    
+    # 2. HITBOX DA CABEÇA
+    cabeca = (x + 2, y - 26, 24, 24)
+    
+    return [corpo, cabeca]
