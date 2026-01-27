@@ -14,12 +14,9 @@ clock = pygame.time.Clock()
 
 textura = pygame.image.load("Cientista.png")
 estado_inicial = "MENU"
-<<<<<<< HEAD
 estado_dados = None 
-=======
-estado_dados = None # O dicionário do jogo.py
 velocidade_x_minimapa = 3
->>>>>>> 3067dc3 (Added viewport)
+
 
 rodando = True
 # --- MANTENHA OS IMPORTS ---

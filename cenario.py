@@ -4,7 +4,7 @@ from constantes import *
 
 # ---------- ESTADO DO CENÁRIO ----------
 scroll_x = 0.0
-velocidade_movimento = 200
+velocidade_movimento = 100
 final_atingido = False
 ultimo_tempo = pygame.time.get_ticks()
 
@@ -17,14 +17,20 @@ limite_scroll = (x_ru_inicial + largura_ru) - largura
 xmin, ymin, xmax, ymax = 0, 0, largura - 1, altura - 1
 
 
-# ---------- FUNÇÕES AUXILIARES ----------
+# Função para garantir o recorte e o movimento
 def desenhar_objeto_movel(tela, pontos, tx, cor, preencher=True):
-    pontos_movidos = funcoes.transladar_pontos(pontos, tx, 0)
+    # Aplicação do culling para verificar se os pontos estão dentro da tela antes de transladar
+    xs_originais = [p[0] for p in pontos]
+    x_min_na_tela = min(xs_originais) + tx
+    x_max_na_tela = max(xs_originais) + tx
 
-    xs = [p[0] for p in pontos_movidos]
-    if min(xs) > largura or max(xs) < 0:
+    if x_max_na_tela < 0 or x_min_na_tela > largura:
         return
 
+    #Translada se visível
+    pontos_movidos = funcoes.transladar_pontos(pontos, tx, 0)
+
+    # Recorte
     pontos_recortados = funcoes.sutherland_hodgman(
         pontos_movidos, xmin, ymin, xmax, ymax
     )
@@ -35,7 +41,7 @@ def desenhar_objeto_movel(tela, pontos, tx, cor, preencher=True):
         funcoes.desenhar_poligono(tela, pontos_recortados, PRETO)
 
 
-# ---------- UPDATE ----------(Busca melhorar a animação)
+# Busca melhorar a animação
 def atualizar(dt):
     global scroll_x, final_atingido
 
@@ -45,51 +51,82 @@ def atualizar(dt):
         if scroll_x >= limite_scroll:
             scroll_x = limite_scroll
             final_atingido = True
+
 # A função de desenhar tem como função desenhar        
 def desenhar(tela):
-    altura_chao= altura-altura//4
-    # --- DESENHO DO CHÃO ---
-    chao_pts = [(0, altura_chao), (x_ru_inicial + largura_ru, altura_chao), (x_ru_inicial + largura_ru, altura), (0, altura)]
-    desenhar_objeto_movel(tela, chao_pts, -scroll_x, CINZA)
+    altura_chao = altura - altura // 4
+    
+    x_fim_mundo_tela = (x_ru_inicial + largura_ru) - scroll_x
 
-    # --- DESENHO DAS COLUNAS---
-    for i in range(1, 12):
-        x_base = i * 250  # Mais próximas uma da outra
-        coluna = [(x_base-20, 0), (x_base+20, 0), (x_base+20, altura_chao), (x_base-20, altura_chao)]
-        base = [(x_base-30, altura_chao-17), (x_base+30, altura_chao-17), (x_base+30, altura_chao), (x_base-30, altura_chao)]
+    # Só desenhamos se o chão ainda não terminou de passar pela tela
+    if x_fim_mundo_tela > 0:
+        x_inicio_visivel = 0 
+        x_fim_visivel = min(largura, x_fim_mundo_tela)
         
-        desenhar_objeto_movel(tela, coluna, -scroll_x, CINZA)
-        desenhar_objeto_movel(tela, base, -scroll_x, CINZA_ESCURO)
+        chao_pts = [
+            (x_inicio_visivel, altura_chao), 
+            (x_fim_visivel, altura_chao), 
+            (x_fim_visivel, altura), 
+            (x_inicio_visivel, altura)
+        ]
+        desenhar_objeto_movel(tela, chao_pts, 0, CINZA)
 
-    # --- DESENHO DO RU (Cenário Final) ---
-    # Corpo do RU (Bege)
-    corpo_ru = [(x_ru_inicial, 0), (x_ru_inicial + largura_ru, 0), 
-                (x_ru_inicial + largura_ru, altura_chao), (x_ru_inicial, altura_chao)]
-    desenhar_objeto_movel(tela, corpo_ru, -scroll_x, BEGE)
+    # --- DESENHO DAS COLUNAS ---
+    # Margem serve para  suavizar o surgimento das colunas
+    margem = 50 
 
-    # Coluna de sustentação embaixo das telhas
-    x_coluna_teto = x_ru_inicial - 80
-    coluna_sustentacao = [(x_coluna_teto-10, 100), (x_coluna_teto+10, 100), 
-                          (x_coluna_teto+10, altura_chao), (x_coluna_teto-10, altura_chao)]
-    sustentacao_base = [(x_coluna_teto-15, altura_chao-10), (x_coluna_teto+15, altura_chao-10), 
-                          (x_coluna_teto+15, altura_chao), (x_coluna_teto-15, altura_chao)]
-    desenhar_objeto_movel(tela, coluna_sustentacao, -scroll_x, CINZA)
-    desenhar_objeto_movel(tela, sustentacao_base, -scroll_x, CINZA_ESCURO)
+    for i in range(1, 12):
+        x_base_mundo = i * 250
+        x_visual = x_base_mundo - scroll_x  
 
-    # Telhado 
-    for i in range(3):
-        y_t = 100 - (i * 20)
-        x_inicio_telha = x_ru_inicial - 150 + (i * 30)
-        teto_pts = [(x_inicio_telha, y_t), (x_ru_inicial, y_t), 
-                    (x_ru_inicial, y_t-20), (x_inicio_telha, y_t-20)]
-        desenhar_objeto_movel(tela, teto_pts, -scroll_x, TELHA)
+        # SÓ desenha se estiver dentro dos limites da tela (-margem até largura+margem)
+        if -margem < x_visual < largura + margem:
+            coluna = [(x_base_mundo-20, 0), (x_base_mundo+20, 0), 
+                      (x_base_mundo+20, altura_chao), (x_base_mundo-20, altura_chao)]
+            base = [(x_base_mundo-30, altura_chao-17), (x_base_mundo+30, altura_chao-17), 
+                    (x_base_mundo+30, altura_chao), (x_base_mundo-30, altura_chao)]
+            
+            desenhar_objeto_movel(tela, coluna, -scroll_x, CINZA)
+            desenhar_objeto_movel(tela, base, -scroll_x, CINZA_ESCURO)
 
-    # --- TEXTO RU ---
-    pos_x_texto = (x_ru_inicial + (largura_ru // 2)) - scroll_x
-    if -50 < pos_x_texto < largura + 50:
-        font = pygame.font.SysFont(None, 60, bold=True)
-        text_surf = font.render("RU", True, PRETO)
-        tela.blit(text_surf, (pos_x_texto - 30, 120))
+    # --- DESENHO DO RU ---
+    # Verifica se o bloco do RU está visível
+    x_ru_visual_inicio = x_ru_inicial - scroll_x
+    x_ru_visual_fim = (x_ru_inicial + largura_ru) - scroll_x
+
+    # Verifica se o ru está dentro da largura da tela antes dele ser carregado
+    if x_ru_visual_inicio < largura:
+        
+        # Corpo do RU
+        corpo_ru = [(x_ru_inicial, 0), (x_ru_inicial + largura_ru, 0), 
+                    (x_ru_inicial + largura_ru, altura_chao), (x_ru_inicial, altura_chao)]
+        desenhar_objeto_movel(tela, corpo_ru, -scroll_x, BEGE)
+
+        x_coluna_teto = x_ru_inicial - 80
+        # Pequena verificação extra pois essa coluna está fora do corpo principal do RU
+        if (x_coluna_teto - scroll_x) > -margem: 
+             coluna_sustentacao = [(x_coluna_teto-10, 100), (x_coluna_teto+10, 100), 
+                                   (x_coluna_teto+10, altura_chao), (x_coluna_teto-10, altura_chao)]
+             sustentacao_base = [(x_coluna_teto-15, altura_chao-10), (x_coluna_teto+15, altura_chao-10), 
+                                 (x_coluna_teto+15, altura_chao), (x_coluna_teto-15, altura_chao)]
+             desenhar_objeto_movel(tela, coluna_sustentacao, -scroll_x, CINZA)
+             desenhar_objeto_movel(tela, sustentacao_base, -scroll_x, CINZA_ESCURO)
+
+        # Telhado 
+        for i in range(3):
+            y_t = 100 - (i * 20)
+            x_inicio_telha = x_ru_inicial - 150 + (i * 30)
+            # Como as telhas são pequenas, confiar no check principal do RU é segur
+            teto_pts = [(x_inicio_telha, y_t), (x_ru_inicial, y_t), 
+                        (x_ru_inicial, y_t-20), (x_inicio_telha, y_t-20)]
+            desenhar_objeto_movel(tela, teto_pts, -scroll_x, TELHA)
+
+        # Texto
+        pos_x_texto = (x_ru_inicial + (largura_ru // 2)) - scroll_x
+        if -50 < pos_x_texto < largura + 50:
+            font = pygame.font.SysFont(None, 60, bold=True)
+            text_surf = font.render("RU", True, PRETO)
+            tela.blit(text_surf, (pos_x_texto - 30, 120))
         
 def desenhar_start(tela):
     altura_chao= altura-altura//4

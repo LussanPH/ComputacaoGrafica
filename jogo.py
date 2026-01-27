@@ -19,15 +19,10 @@ def inicializar_estado():
             "y": Y_CHAO,
             "pulando": False,
             "velocidade": 0,
-<<<<<<< HEAD
-            "vidas": 1, # Coração 0 e 1 
-            "inv_timer": 0
-=======
             "vidas": 2, # Coração 0, 1 e 2
             "inv_timer": 0,
             "posicao_viewport_x": 10,
             "posicao_viewport_y": 357
->>>>>>> 3067dc3 (Added viewport)
         },
         "obstaculos": {
             "pombos": pombos,
