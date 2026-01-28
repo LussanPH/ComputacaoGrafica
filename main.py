@@ -2,20 +2,26 @@ import pygame
 import sys
 import jogo
 import jogador
+import modelo_fila_ru
 import telas
 import cenario
 import funcoes
-from constantes import largura, altura, AZUL
+from constantes import *
 
 pygame.init()
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Djonga Run")
 clock = pygame.time.Clock()
 
-textura = pygame.image.load("Cientista.png")
+#Textura dos rostos
+textura_cientista = pygame.image.load("img/Cientista.png")
+textura_lucas = pygame.image.load("img/Lucas.png")
+textura_luna = pygame.image.load("img/Luna.png")
+textura_icaro = pygame.image.load("img/Icaro.png")
+
 estado_inicial = "MENU"
 estado_dados = None 
-velocidade_x_minimapa = 0.8
+velocidade_x_minimapa = 0.9
 
 
 rodando = True
@@ -72,9 +78,11 @@ while rodando:
         protegido = p["inv_timer"] > 0
 
         if p["pulando"]:
-            jogador.desenhar_pulo(tela, p["x"], p["y"], textura, p["velocidade"], protegido)
+            jogador.desenhar_pulo(tela, p["x"], p["y"], textura_cientista, p["velocidade"], protegido)
         else:
-            jogador.desenhar_jogador(tela, p["x"], p["y"], textura, protegido)
+            jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
+
+        modelo_fila_ru.desenhar_modelo(tela, 250, 150, CINZA_CLARO, textura_icaro)# Função para desenhar personagem na fila do RU
 
         # 5. Desenho do minimapa com o jogador
         mover_minimapa = funcoes.viewport(tela, p["posicao_viewport_x"], p["posicao_viewport_y"])

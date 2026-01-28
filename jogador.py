@@ -148,7 +148,6 @@ def desenhar_pulo(tela, x, y, textura, velocidade, invencivel = False):
     
     #Desenhar cabeça
     distancia_origem = 14
-    lista_x_pontos = [] #Vai ser necessário para calcular o novo raio
 
     xc_cabeca = x + distancia_origem
     yc_cabeca = y - distancia_origem
@@ -156,9 +155,6 @@ def desenhar_pulo(tela, x, y, textura, velocidade, invencivel = False):
 
     pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) 
     pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
-    for ponto in pontos_circulo:
-        funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
-        lista_x_pontos.append(ponto[0])
 
     funcoes.setTexturaCabeca(tela, textura, xc_cabeca, yc_cabeca, raio_cabeca+1)
 
