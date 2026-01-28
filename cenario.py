@@ -4,12 +4,12 @@ from constantes import *
 
 # ---------- ESTADO DO CENÁRIO ----------
 scroll_x = 0.0
-velocidade_movimento = 100
+velocidade_movimento = 90
 final_atingido = False
 ultimo_tempo = pygame.time.get_ticks()
 
 # RU
-x_ru_inicial = 3000
+x_ru_inicial = 3300
 largura_ru = 450
 limite_scroll = (x_ru_inicial + largura_ru) - largura
 

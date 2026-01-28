@@ -15,7 +15,7 @@ def inicializar_estado():
     pombos, cachorros = resetar_jogo()
     return {
         "player": {
-            "x": 175,
+            "x": 125,
             "y": Y_CHAO,
             "pulando": False,
             "velocidade": 0,
@@ -62,18 +62,28 @@ def processar_logica(tela, estado, dt, teclas):
         hb_djonga = jogador.calcular_hitbox_jogador(p["x"], p["y"])
         if colisoes.verificar_colisoes_gerais(hb_djonga, obs["cachorros"], obs["pombos"]):
             p["vidas"] -= 1
-            p["inv_timer"] = 0.8 # 0.8 segundos de folga
+            p["inv_timer"] = 2 # 2 segundos de folga
             return True
     return False
 
 def resetar_jogo():
+    """Distribuição estratégica de obstáculos para uma corrida de 3000px"""
+    
+    # POMBOS: Desafios aéreos (fase e y variados para confundir o pulo)
     pombos = [
-        {"x": 700, "y": 100, "fase": 0, "vel": 10},
-        {"x": 900, "y": 150, "fase": 30, "vel": 10}
+        {"x": 800,  "y": 140, "fase": 0,  "vel": 7},   # Primeiro susto
+        {"x": 1600, "y": 120, "fase": 20, "vel": 8},   # Mais alto, exige pulo preciso
+        {"x": 2300, "y": 220, "fase": 15, "vel": 8},   # Rápido e baixo (perigoso!)
+        {"x": 2950, "y": 200, "fase": 40, "vel": 12}  # O "Pombo do Mal" na porta do RU
     ]
+
+    # CACHORROS: Obstáculos terrestres (ritmo de pulo)
     cachorros = [
-        {"x": 600, "y": 280, "fase": 0, "vel": 10},
-        {"x": 800, "y": 280, "fase": 0, "vel": 10},
-        {"x": 860, "y": 280, "fase": 0, "vel": 10}
+        {"x": 500,  "y": 280, "fase": 0, "vel": 6},   # Tutorial: Pulo simples
+        {"x": 1100, "y": 280, "fase": 0, "vel": 7},   # Ritmo constante
+        {"x": 1300, "y": 280, "fase": 0, "vel": 8},   # Combo: dois cachorros próximos!
+        {"x": 2000, "y": 280, "fase": 0, "vel": 9},  # Velocidade alta
+        {"x": 2850, "y": 280, "fase": 0, "vel": 11}   # Sprint final
     ]
+
     return pombos, cachorros

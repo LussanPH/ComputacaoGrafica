@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 textura = pygame.image.load("Cientista.png")
 estado_inicial = "MENU"
 estado_dados = None 
-velocidade_x_minimapa = 3
+velocidade_x_minimapa = 0.8
 
 
 rodando = True
@@ -81,6 +81,8 @@ while rodando:
 
         if mover_minimapa:
             p["posicao_viewport_x"] += velocidade_x_minimapa
+        
+        print(dt)
 
     pygame.display.flip()
 

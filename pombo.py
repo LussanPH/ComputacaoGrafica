@@ -49,7 +49,7 @@ def calcular_hitbox_pombo(x, y, fase):
     y_corpo = y + balanco
     
     # O pombo é "comprido" mas "fino"
-    hb_w = 70 # Do bico até o final do corpo
+    hb_w = 65 # Do bico até o final do corpo
     hb_h = 22 # Fina o suficiente para o player tentar passar por baixo/cima
     hb_x = x - 38 # Começa no bico/cabeça
     hb_y = y_corpo - 15 # Centralizado no corpo
