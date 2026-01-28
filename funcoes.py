@@ -1,32 +1,33 @@
 import math
 from constantes import *
+import pygame
 
 
-def setPixel(tela, x, y, cor):#Desenha um pixel
-    if x < 0 or x > largura or y < 0 or y > altura:
-        return
-    else:
-        tela.set_at((x, y), cor)
+def setPixel(p_array, x, y, cor):
+
+    
+    if 0 <= x < largura and 0 <= y < altura:
+        p_array[x, y] = cor
 
 
-def dda(tela, x0, x1, y0, y1, cor):
+def dda(p_array, x0, x1, y0, y1, cor):
     deltaX = x1 - x0
     deltaY = y1 - y0
     passos = int(max(abs(deltaX), abs(deltaY)))
     if passos == 0:
-        setPixel(tela, x0, y0, cor)
+        setPixel(p_array, x, y, cor)
         return
     xIncremento = deltaX / passos
     yIncremento = deltaY / passos
     x = x0
     y = y0
     for i in range(passos + 1):
-        setPixel(tela, round(x), round(y), cor)
+        setPixel(p_array, round(x), round(y), cor)
         x += xIncremento
         y += yIncremento
 
 
-def bresenham_reta(tela, x0, x1, y0, y1, cor):
+def bresenham_reta(p_array, x0, x1, y0, y1, cor):
     deltaX = abs(x1 - x0)
     deltaY = abs(y1 - y0)
 
@@ -40,7 +41,7 @@ def bresenham_reta(tela, x0, x1, y0, y1, cor):
     p = deltaX - deltaY
 
     while True:
-        setPixel(tela, x0, y0, cor)
+        setPixel(p_array, x0, y0, cor)
 
         if x0 == x1 and y0 == y1:
             break
@@ -56,14 +57,14 @@ def bresenham_reta(tela, x0, x1, y0, y1, cor):
             y0 += direcaoY
 
 
-def desenhar_poligono(tela, pontos, cor):
+def desenhar_poligono(p_array, pontos, cor):
     n = len(pontos)
     if n < 3:
         return  
     for i in range(n):
         x0, y0 = pontos[i]
         x1, y1 = pontos[(i + 1) % n] 
-        bresenham_reta(tela, x0, x1, y0, y1, cor)
+        bresenham_reta(p_array, x0, x1, y0, y1, cor)
 
 
 def get_simetria_circulo(xc, yc, x, y):
@@ -157,51 +158,53 @@ def bresenham_elipse(tela, xc, yc, a, b, cor):
     return pontos_elipse
 
 
-def boundary_fill(tela, x, y, boundary_color, fill_color):
+def boundary_fill(p_array, x, y, boundary_color, fill_color):
     # iterativo com pilha; compara apenas RGB (ignora alpha)
     stack = [(x, y)]
     while stack:
         cx, cy = stack.pop()
         if cx < 0 or cx >= largura or cy < 0 or cy >= altura:
             continue
-        current_color = tela.get_at((cx, cy))[:3]
+        current_color = pygame.Color(p_array[cx, cy])[:3]
         if current_color != tuple(boundary_color) and current_color != tuple(fill_color):
-            setPixel(tela, cx, cy, fill_color)
+            setPixel(p_array, cx, cy, fill_color)
             stack.append((cx + 1, cy))
             stack.append((cx - 1, cy))
             stack.append((cx, cy + 1))
             stack.append((cx, cy - 1))
 
 
-def scanline(tela, pontos, cor):
+def scanline(p_array, pontos, cor):
     ys = [p[1] for p in pontos]
-    ymin = max(0, min(ys))
-    ymax = min(altura - 1, max(ys))
+    ymin = max(0, int(min(ys)))
+    ymax = min(altura - 1, int(max(ys)))
     n = len(pontos)
+
     for y in range(ymin, ymax + 1):
         intersecoes = []
         for i in range(n):
             x0, y0 = pontos[i]
             x1, y1 = pontos[(i + 1) % n]
-            if y0 == y1:
-                continue
+            
+            if y0 == y1: continue
+            
             if y0 > y1:
                 x0, y0, x1, y1 = x1, y1, x0, y0
-            if y < y0 or y >= y1:
-                continue
+            
+            if y < y0 or y >= y1: continue
+            
             x_int = x0 + (y - y0) * (x1 - x0) / (y1 - y0)
             intersecoes.append(x_int)
+        
         intersecoes.sort()
+        
         for i in range(0, len(intersecoes), 2):
             if i + 1 < len(intersecoes):
-                x_start = int(round(intersecoes[i]))
-                x_end = int(round(intersecoes[i + 1]))
-                x_start = max(0, x_start)
-                x_end = min(largura - 1, x_end)
-                for x in range(x_start, x_end + 1):
-                    setPixel(tela, x, y, cor)
-                    
-def scanline_fill_circle(surface, xc, yc, r, cor):
+                x_start = max(0, int(round(intersecoes[i])))
+                x_end = min(largura, int(round(intersecoes[i + 1])) + 1)
+                if x_start < x_end:
+                    p_array[x_start:x_end, y] = cor
+def scanline_fill_circle(p_array, xc, yc, r, cor):
     
     if r <= 0:
         return
@@ -219,9 +222,9 @@ def scanline_fill_circle(surface, xc, yc, r, cor):
         x_start = max(0, xc - dx)
         x_end = min(largura - 1, xc + dx)
         for x in range(x_start, x_end + 1):
-            setPixel(surface, x, y, cor)
+           setPixel(p_array, x, y, cor)
 
-def scanline_fill_ellipse(surface, xc, yc, a, b, cor):
+def scanline_fill_ellipse(p_array, xc, yc, a, b, cor):
     if a <= 0 or b <= 0:
         return
 
@@ -242,7 +245,7 @@ def scanline_fill_ellipse(surface, xc, yc, a, b, cor):
         x_start = max(0, xc - dx)
         x_end = min(largura - 1, xc + dx)
         for x in range(x_start, x_end + 1):
-            setPixel(surface, x, y, cor)
+            setPixel(p_array, x, y, cor)
 
 def escala(pontos,sx,sy):
     xm=[]
@@ -435,10 +438,10 @@ def intersecao(x1,y1,w1,h1,x2,y2,w2,h2):
 
     return has_collision    
 
-def setTexturaCabeca(tela, textura, x_centro, y_centro, raio):
+def setTexturaCabeca(p_array, textura, x_centro, y_centro, raio):
     largura_textura, altura_textura = textura.get_size()
     diametro = raio*2
-
+    tex_arr = pygame.PixelArray(textura)
     for y in range(y_centro - raio, y_centro + raio):
         for x in range(x_centro - raio, x_centro + raio):
             distancia_ao_quadrado = (x - x_centro)**2 + (y - y_centro)**2
@@ -452,11 +455,11 @@ def setTexturaCabeca(tela, textura, x_centro, y_centro, raio):
 
                 tx = int(u * (largura_textura - 1))
                 ty = int(v * (altura_textura - 1))
-            
-                cor = textura.get_at((tx, ty))
-                tela.set_at((x, y), cor)
+                
+                cor = tex_arr[tx, ty]
+                p_array[x, y] = cor
 
-def viewport(tela, x, y):
+def viewport(p_array, x, y):
     quadrado = [(15, int((altura - altura//10))), (15, altura - 35), (int(largura//4), altura - 35), (int(largura//4), (altura - int(altura//10)))]
     haste_chegada =  [(int(largura//4) - 4, int((altura - altura//10)) - 20),
                 (int(largura//4) - 4, int((altura - altura//10)) - 1),
@@ -465,16 +468,16 @@ def viewport(tela, x, y):
     bandeira_chegada = [(int(largura//4) - 1, int((altura - altura//10)) - 20),
                         (int(largura//4) - 1, int((altura - altura//10)) - 10),
                         (int(largura//4) + 10, int((altura - altura//10)) - 15)]
-    circulo_jogador = bresenham_circulo(tela, int(x), y, 2, BRANCO)
+    circulo_jogador = bresenham_circulo(p_array, int(x), y, 2, BRANCO)
 
-    desenhar_poligono(tela, quadrado, PRETO)
-    desenhar_poligono(tela, haste_chegada, BRANCO)
-    desenhar_poligono(tela, bandeira_chegada, VERMELHO)
-    scanline(tela, quadrado, PRETO)
-    scanline(tela, haste_chegada, BRANCO)
-    scanline(tela, bandeira_chegada, VERMELHO)
+    desenhar_poligono(p_array, quadrado, PRETO)
+    desenhar_poligono(p_array, haste_chegada, BRANCO)
+    desenhar_poligono(p_array, bandeira_chegada, VERMELHO)
+    scanline(p_array, quadrado, PRETO)
+    scanline(p_array, haste_chegada, BRANCO)
+    scanline(p_array, bandeira_chegada, VERMELHO)
 
-    desenhar_poligono(tela, circulo_jogador, BRANCO)
+    desenhar_poligono(p_array, circulo_jogador, BRANCO)
 
     if not x >= int(largura//4) - 4:
         return True
@@ -492,7 +495,7 @@ def interpola_cor(c1, c2, t):
     
     return (r, g, b)
 
-def scanline_fill_gradiente(superficie, pontos, cores):
+def scanline_fill_gradiente(p_array, pontos, cores):
     ys = [p[1] for p in pontos]
     y_min = int(min(ys))
     y_max = int(max(ys))
@@ -538,4 +541,4 @@ def scanline_fill_gradiente(superficie, pontos, cores):
                 for x in range(int(x_ini), int(x_fim) + 1):
                     t = (x - x_ini) / (x_fim - x_ini)
                     cor = interpola_cor(cor_ini, cor_fim, t)
-                    setPixel(superficie, x, y, cor)
+                    setPixel(p_array, x, y, cor)

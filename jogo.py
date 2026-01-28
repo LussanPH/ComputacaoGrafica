@@ -31,7 +31,7 @@ def inicializar_estado():
         "status": "JOGANDO"
     }
 
-def processar_logica(tela, estado, dt, teclas):
+def processar_logica(p_array, estado, dt, teclas):
     """Executa a matemática e as colisões. Retorna True se houve um hit."""
     p = estado["player"]
     obs = estado["obstaculos"]
@@ -54,8 +54,8 @@ def processar_logica(tela, estado, dt, teclas):
         p["inv_timer"] -= dt
 
     # 3. Movimentação dos Inimigos
-    cachorro.processar_cachorros(tela, obs["cachorros"])
-    pombo.processar_pombos(tela, obs["pombos"])
+    cachorro.processar_cachorros(p_array, obs["cachorros"])
+    pombo.processar_pombos(p_array, obs["pombos"])
 
     # 4. Colisões
     if p["inv_timer"] <= 0:

@@ -18,7 +18,7 @@ xmin, ymin, xmax, ymax = 0, 0, largura - 1, altura - 1
 
 
 # Função para garantir o recorte e o movimento
-def desenhar_objeto_movel(tela, pontos, tx, cor, preencher=True):
+def desenhar_objeto_movel(p_array, pontos, tx, cor, preencher=True):
     # Aplicação do culling para verificar se os pontos estão dentro da tela antes de transladar
     xs_originais = [p[0] for p in pontos]
     x_min_na_tela = min(xs_originais) + tx
@@ -37,8 +37,8 @@ def desenhar_objeto_movel(tela, pontos, tx, cor, preencher=True):
 
     if len(pontos_recortados) > 2:
         if preencher:
-            funcoes.scanline(tela, pontos_recortados, cor)
-        funcoes.desenhar_poligono(tela, pontos_recortados, PRETO)
+            funcoes.scanline(p_array, pontos_recortados, cor)
+        funcoes.desenhar_poligono(p_array, pontos_recortados, PRETO)
 
 
 # Busca melhorar a animação
@@ -53,7 +53,7 @@ def atualizar(dt):
             final_atingido = True
 
 # A função de desenhar tem como função desenhar        
-def desenhar(tela):
+def desenhar(tela,p_array):
     altura_chao = altura - altura // 4
     
     x_fim_mundo_tela = (x_ru_inicial + largura_ru) - scroll_x
@@ -69,7 +69,7 @@ def desenhar(tela):
             (x_fim_visivel, altura), 
             (x_inicio_visivel, altura)
         ]
-        desenhar_objeto_movel(tela, chao_pts, 0, CINZA)
+        desenhar_objeto_movel(p_array, chao_pts, 0, CINZA)
 
     # --- DESENHO DAS COLUNAS ---
     # Margem serve para  suavizar o surgimento das colunas
@@ -86,8 +86,8 @@ def desenhar(tela):
             base = [(x_base_mundo-30, altura_chao-17), (x_base_mundo+30, altura_chao-17), 
                     (x_base_mundo+30, altura_chao), (x_base_mundo-30, altura_chao)]
             
-            desenhar_objeto_movel(tela, coluna, -scroll_x, CINZA)
-            desenhar_objeto_movel(tela, base, -scroll_x, CINZA_ESCURO)
+            desenhar_objeto_movel(p_array, coluna, -scroll_x, CINZA)
+            desenhar_objeto_movel(p_array, base, -scroll_x, CINZA_ESCURO)
 
     # --- DESENHO DO RU ---
     # Verifica se o bloco do RU está visível
@@ -100,7 +100,7 @@ def desenhar(tela):
         # Corpo do RU
         corpo_ru = [(x_ru_inicial, 0), (x_ru_inicial + largura_ru, 0), 
                     (x_ru_inicial + largura_ru, altura_chao), (x_ru_inicial, altura_chao)]
-        desenhar_objeto_movel(tela, corpo_ru, -scroll_x, BEGE)
+        desenhar_objeto_movel(p_array, corpo_ru, -scroll_x, BEGE)
 
         x_coluna_teto = x_ru_inicial - 80
         # Pequena verificação extra pois essa coluna está fora do corpo principal do RU
@@ -109,8 +109,8 @@ def desenhar(tela):
                                    (x_coluna_teto+10, altura_chao), (x_coluna_teto-10, altura_chao)]
              sustentacao_base = [(x_coluna_teto-15, altura_chao-10), (x_coluna_teto+15, altura_chao-10), 
                                  (x_coluna_teto+15, altura_chao), (x_coluna_teto-15, altura_chao)]
-             desenhar_objeto_movel(tela, coluna_sustentacao, -scroll_x, CINZA)
-             desenhar_objeto_movel(tela, sustentacao_base, -scroll_x, CINZA_ESCURO)
+             desenhar_objeto_movel(p_array, coluna_sustentacao, -scroll_x, CINZA)
+             desenhar_objeto_movel(p_array, sustentacao_base, -scroll_x, CINZA_ESCURO)
 
         # Telhado 
         for i in range(3):
@@ -119,7 +119,7 @@ def desenhar(tela):
             # Como as telhas são pequenas, confiar no check principal do RU é segur
             teto_pts = [(x_inicio_telha, y_t), (x_ru_inicial, y_t), 
                         (x_ru_inicial, y_t-20), (x_inicio_telha, y_t-20)]
-            desenhar_objeto_movel(tela, teto_pts, -scroll_x, TELHA)
+            desenhar_objeto_movel(p_array, teto_pts, -scroll_x, TELHA)
 
         # Texto
         pos_x_texto = (x_ru_inicial + (largura_ru // 2)) - scroll_x
@@ -128,12 +128,12 @@ def desenhar(tela):
             text_surf = font.render("RU", True, PRETO)
             tela.blit(text_surf, (pos_x_texto - 30, 120))
         
-def desenhar_start(tela):
+def desenhar_start(p_array):
     altura_chao= altura-altura//4
     # --- DESENHO DO CHÃO ---
     chao_pts = [(0, altura_chao), (x_ru_inicial + largura_ru, altura_chao), (x_ru_inicial + largura_ru, altura), (0, altura)]
-    funcoes.desenhar_poligono(tela, chao_pts, CINZA)
-    funcoes.scanline(tela, chao_pts, CINZA)
+    funcoes.desenhar_poligono(p_array, chao_pts, CINZA)
+    funcoes.scanline(p_array, chao_pts, CINZA)
 
     # --- DESENHO DAS COLUNAS---
     espacamento= largura//4
@@ -142,12 +142,12 @@ def desenhar_start(tela):
         coluna = [(x_base-20, 0), (x_base+20, 0), (x_base+20, altura_chao), (x_base-20, altura_chao)]
         base = [(x_base-30, altura_chao-17), (x_base+30, altura_chao-17), (x_base+30, altura_chao), (x_base-30, altura_chao)]
         
-        funcoes.scanline(tela, coluna, CINZA)
-        funcoes.desenhar_poligono(tela, coluna, PRETO)
-        funcoes.scanline(tela, base, CINZA_ESCURO)
-        funcoes.desenhar_poligono(tela, base, PRETO)
+        funcoes.scanline(p_array, coluna, CINZA)
+        funcoes.desenhar_poligono(p_array, coluna, PRETO)
+        funcoes.scanline(p_array, base, CINZA_ESCURO)
+        funcoes.desenhar_poligono(p_array, base, PRETO)
         
-def desenhar_game_over(tela):
+def desenhar_game_over(tela,p_array):
     # Definir cor de fundo
     y_topo = 0
     y_base = altura - 1
@@ -157,8 +157,8 @@ def desenhar_game_over(tela):
         (largura - 1, y_base),
         (0, y_base)
     ]
-    funcoes.desenhar_poligono(tela, fundo, AZUL)
-    funcoes.scanline(tela, fundo, AZUL)
+    funcoes.desenhar_poligono(p_array, fundo, AZUL)
+    funcoes.scanline(p_array, fundo, AZUL)
 
     # Desenhar chão
     y_topo = altura - altura // 3
@@ -169,9 +169,9 @@ def desenhar_game_over(tela):
         (largura - 1, y_base),
         (0, y_base)
     ]
-    funcoes.desenhar_poligono(tela, chao, CINZA)
-    funcoes.scanline(tela, chao, CINZA)
-    funcoes.desenhar_poligono(tela, [(0, y_topo), (largura - 1, y_topo)], PRETO)
+    funcoes.desenhar_poligono(p_array, chao, CINZA)
+    funcoes.scanline(p_array, chao, CINZA)
+    funcoes.desenhar_poligono(p_array, [(0, y_topo), (largura - 1, y_topo)], PRETO)
 
     # Desenhar colunas e detalhes em cinza escuro 
     largura_coluna = 40
@@ -187,8 +187,8 @@ def desenhar_game_over(tela):
             (x_centro + largura_coluna // 2, y_topo),
             (x_centro - largura_coluna // 2, y_topo)
         ]
-        funcoes.desenhar_poligono(tela, coluna, CINZA)
-        funcoes.scanline(tela, coluna, CINZA)
+        funcoes.desenhar_poligono(p_array, coluna, CINZA)
+        funcoes.scanline(p_array, coluna, CINZA)
 
         linha_sombra = [
             (x_centro + largura_coluna // 4, 0),
@@ -200,9 +200,9 @@ def desenhar_game_over(tela):
             (x_centro + (largura_coluna // 2 + 10), y_topo),
             (x_centro - (largura_coluna // 2 + 10), y_topo)
         ]
-        funcoes.desenhar_poligono(tela, linha_sombra, CINZA_ESCURO)
-        funcoes.desenhar_poligono(tela, base, CINZA_ESCURO)
-        funcoes.scanline(tela, base, CINZA_ESCURO)
+        funcoes.desenhar_poligono(p_array, linha_sombra, CINZA_ESCURO)
+        funcoes.desenhar_poligono(p_array, base, CINZA_ESCURO)
+        funcoes.scanline(p_array, base, CINZA_ESCURO)
 
     # retângulo bege (RU)
     y_topo = altura - altura // 3
@@ -214,8 +214,8 @@ def desenhar_game_over(tela):
         (largura - 1, y_base),
         (largura_ru, y_base)
     ]
-    funcoes.desenhar_poligono(tela, chao_bege, BEGE)
-    funcoes.scanline(tela, chao_bege, BEGE)
+    funcoes.desenhar_poligono(p_array, chao_bege, BEGE)
+    funcoes.scanline(p_array, chao_bege, BEGE)
 
     # teto telha
     y_topo_teto = altura - 3 * altura // 4
@@ -227,8 +227,8 @@ def desenhar_game_over(tela):
         (largura_ru, y_base_teto),
         (largura_teto, y_base_teto)
     ]
-    funcoes.desenhar_poligono(tela, teto, TELHA)
-    funcoes.scanline(tela, teto, TELHA)
+    funcoes.desenhar_poligono(p_array, teto, TELHA)
+    funcoes.scanline(p_array, teto, TELHA)
     
     y_topo_teto2 = y_base_teto
     largura_teto2 = largura_teto+30
@@ -239,8 +239,8 @@ def desenhar_game_over(tela):
         (largura_ru, y_base_teto2),
         (largura_teto2, y_base_teto2)
     ]
-    funcoes.desenhar_poligono(tela, teto, TELHA)
-    funcoes.scanline(tela, teto, TELHA)
+    funcoes.desenhar_poligono(p_array, teto, TELHA)
+    funcoes.scanline(p_array, teto, TELHA)
     
     y_topo_teto3 = y_base_teto2
     largura_teto3 = largura_teto2+30
@@ -251,8 +251,8 @@ def desenhar_game_over(tela):
         (largura_ru, y_base_teto3),
         (largura_teto3, y_base_teto3)
     ]
-    funcoes.desenhar_poligono(tela, teto, TELHA)
-    funcoes.scanline(tela, teto, TELHA)
+    funcoes.desenhar_poligono(p_array, teto, TELHA)
+    funcoes.scanline(p_array, teto, TELHA)
     
     espacamento = (largura_teto + largura_ru) // 2 - 70
     y_topo_chao = altura - altura // 3
@@ -264,8 +264,8 @@ def desenhar_game_over(tela):
         (espacamento + largura_coluna // 2, y_topo_chao),
         (espacamento - largura_coluna // 2, y_topo_chao)
     ]
-    funcoes.desenhar_poligono(tela, coluna_teto, CINZA)
-    funcoes.scanline(tela, coluna_teto, CINZA)
+    funcoes.desenhar_poligono(p_array, coluna_teto, CINZA)
+    funcoes.scanline(p_array, coluna_teto, CINZA)
 
     base_teto = [
         (espacamento - (largura_coluna // 2 + 10), y_topo_chao - altura_base_capital),
@@ -273,8 +273,8 @@ def desenhar_game_over(tela):
         (espacamento + (largura_coluna // 2 + 10), y_topo_chao),
         (espacamento - (largura_coluna // 2 + 10), y_topo_chao)
     ]
-    funcoes.desenhar_poligono(tela, base_teto, CINZA_ESCURO)
-    funcoes.scanline(tela, base_teto, CINZA_ESCURO)
+    funcoes.desenhar_poligono(p_array, base_teto, CINZA_ESCURO)
+    funcoes.scanline(p_array, base_teto, CINZA_ESCURO)
 
     #Texto RU
     font_size = max(12, int((y_topo) * 0.25))  

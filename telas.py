@@ -6,7 +6,7 @@ import sys
 import pygame
 import funcoes
 
-def tela_start(tela):
+def tela_start(tela,p_array):
     menu_ativo = True
     clock = pygame.time.Clock()
 
@@ -52,8 +52,8 @@ def tela_start(tela):
                     menu_ativo = False
 
         # Fundo preto com scanline
-        funcoes.scanline_fill_gradiente(tela, fundo, cores_poligono)
-        cenario.desenhar_start(tela)
+        funcoes.scanline_fill_gradiente(p_array, fundo, cores_poligono)
+        cenario.desenhar_start(p_array)
 
         # Título acima do botão
         titulo_x = largura // 2 - surf_titulo.get_width() // 2
@@ -66,8 +66,8 @@ def tela_start(tela):
             tela.blit(surf_outline, (titulo_x + ox, titulo_y + oy))
 
         tela.blit(surf_titulo, (titulo_x, titulo_y))
-        funcoes.desenhar_poligono(tela, pontos_botao, BRANCO)
-        funcoes.scanline(tela, pontos_botao, LARANJA)
+        funcoes.desenhar_poligono(p_array, pontos_botao, BRANCO)
+        funcoes.scanline(p_array, pontos_botao, LARANJA)
         tela.blit(
             surf_instrucao,
             (
@@ -79,7 +79,7 @@ def tela_start(tela):
         pygame.display.flip()
         clock.tick(30)
         
-def tela_game_over(tela):
+def tela_game_over(tela,p_array):
     menu_ativo = True
     clock = pygame.time.Clock()
 
@@ -135,9 +135,9 @@ def tela_game_over(tela):
                     menu_ativo = False
 
         # Desenhar fundo preto com scanline
-        funcoes.desenhar_poligono(tela, fundo, AZUL)
-        funcoes.scanline(tela, fundo, AZUL)
-        cenario.desenhar_game_over(tela)
+        funcoes.desenhar_poligono(p_array, fundo, AZUL)
+        funcoes.scanline(p_array, fundo, AZUL)
+        cenario.desenhar_game_over(tela,p_array)
        
 
         # Título com contorno
@@ -150,8 +150,8 @@ def tela_game_over(tela):
 
         # Desenhar os dois botões e seus textos
         for idx, (x_base, pontos_botao) in enumerate(pontos_botoes):
-            funcoes.desenhar_poligono(tela, pontos_botao, BRANCO)
-            funcoes.scanline(tela, pontos_botao, LARANJA)
+            funcoes.desenhar_poligono(p_array, pontos_botao, BRANCO)
+            funcoes.scanline(p_array, pontos_botao, LARANJA)
 
             label = fontes = fonte_instrucao.render(textos_botoes[idx], True, PRETO)
             label_x = x_base - label.get_width() // 2
