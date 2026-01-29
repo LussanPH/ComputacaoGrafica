@@ -34,7 +34,8 @@ while rodando:
     if estado_inicial == "MENU":
         telas.tela_start(tela)
         # Resets
-        cenario.resetar()              
+        cenario.resetar()            
+        x_inicio_ru = cenario.x_ru_inicial  
         estado_dados = jogo.inicializar_estado() 
         clock.tick()                   
         estado_inicial = "JOGANDO"
@@ -83,7 +84,9 @@ while rodando:
                 poligonos_jogador = jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
 
         # 5. Desenho do viewport
-        funcoes.viewport(tela, poligonos_jogador, textura_cientista, p["pulando"], p["distancia_chao"], p["velocidade"], protegido)
+        if not x_inicio_ru < largura:
+            funcoes.viewport(tela, poligonos_jogador, textura_cientista, p["pulando"], p["distancia_chao"], p["velocidade"], protegido)
+            x_inicio_ru -= 9
         
         print(dt)
 
