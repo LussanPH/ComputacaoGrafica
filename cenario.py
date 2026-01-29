@@ -125,9 +125,9 @@ def desenhar(tela):
             teto_pts = [(x_inicio_telha, y_t), (x_ru_inicial, y_t), 
                         (x_ru_inicial, y_t-20), (x_inicio_telha, y_t-20)]
             desenhar_objeto_movel(tela, teto_pts, -scroll_x, TELHA)
-        pos_x_vitoria = x_ru_inicial - scroll_x -200
+        pos_x_vitoria = x_ru_inicial - scroll_x -250
         if -200 < pos_x_vitoria < largura + 200:
-            fonte_vitoria = pygame.font.SysFont(None, 80, bold=True)
+            fonte_vitoria = pygame.font.SysFont(None, 50, bold=True)
             msg = "HOJE TEM LASANHA!"
             sombra = fonte_vitoria.render(msg, True, PRETO)
             texto = fonte_vitoria.render(msg, True, LARANJA)
@@ -141,7 +141,7 @@ def desenhar(tela):
         x_luna_mundo = x_icaro_mundo - distancia_entre_fila
         x_lucas_mundo = x_luna_mundo - distancia_entre_fila
 
-        desenhar_modelo(tela, x_icaro_mundo - scroll_x, y_modelos, VERMELHO, textura_icaro)
+        desenhar_modelo(tela, x_icaro_mundo - scroll_x, y_modelos, LARANJA, textura_icaro)
     
         desenhar_modelo(tela, x_luna_mundo - scroll_x, y_modelos, VERDE, textura_luna)
         

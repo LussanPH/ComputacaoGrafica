@@ -17,7 +17,7 @@ clock = pygame.time.Clock()
 textura_cientista = pygame.image.load("img/Cientista.png")
 
 
-estado_inicial = "MENU"
+estado_inicial = "GAME OVER"
 estado_dados = None 
 velocidade_x_minimapa = 0.9
 

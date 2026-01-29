@@ -95,16 +95,17 @@ def tela_game_over(tela):
     botao_largura = 200
     botao_altura = 90
     espacamento = largura // 3
-    by = altura // 2
+    by = (altura // 2)-50
+    botao_by=altura-altura//3
 
     pontos_botoes = []
     for i in range(1, 3):
         x_base = i * espacamento
         pontos = [
-            (x_base - botao_largura // 2, by),
-            (x_base + botao_largura // 2, by),
-            (x_base + botao_largura // 2, by + botao_altura),
-            (x_base - botao_largura // 2, by + botao_altura)
+            (x_base - botao_largura // 2, botao_by),
+            (x_base + botao_largura // 2, botao_by),
+            (x_base + botao_largura // 2, botao_by + botao_altura),
+            (x_base - botao_largura // 2, botao_by + botao_altura)
         ]
         pontos_botoes.append((x_base, pontos))
 
@@ -148,14 +149,14 @@ def tela_game_over(tela):
             tela.blit(surf_outline, (titulo_x + ox, titulo_y + oy))
         tela.blit(surf_titulo, (titulo_x, titulo_y))
 
-        # Desenhar os dois botões e seus textos
+        # Desenhar os dois botões e seus texto
         for idx, (x_base, pontos_botao) in enumerate(pontos_botoes):
             funcoes.desenhar_poligono(tela, pontos_botao, BRANCO)
             funcoes.scanline(tela, pontos_botao, LARANJA)
 
             label = fontes = fonte_instrucao.render(textos_botoes[idx], True, PRETO)
             label_x = x_base - label.get_width() // 2
-            label_y = by + botao_altura // 2 - label.get_height() // 2
+            label_y = botao_by + botao_altura // 2 - label.get_height() // 2
             tela.blit(label, (label_x, label_y))
 
         pygame.display.flip()
