@@ -17,7 +17,7 @@ clock = pygame.time.Clock()
 textura_cientista = pygame.image.load("img/Cientista.png")
 
 
-estado_inicial = "GAME OVER"
+estado_inicial = "MENU"
 estado_dados = None 
 velocidade_x_minimapa = 0.9
 
@@ -75,11 +75,13 @@ while rodando:
         # --- DESENHOS ---
         jogador.desenhar_vida(tela, p["vidas"])
         protegido = p["inv_timer"] > 0
-
-        if p["pulando"]:
-            jogador.desenhar_pulo(tela, p["x"], p["y"], textura_cientista, p["velocidade"], protegido)
+        if cenario.final_atingido:
+            modelo_fila_ru.desenhar_modelo(tela, p["x"], p["y"] , VERMELHO, textura_cientista)
         else:
-            jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
+            if p["pulando"]:
+                jogador.desenhar_pulo(tela, p["x"], p["y"], textura_cientista, p["velocidade"], protegido)
+            else:
+                jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
 
         
 

@@ -12,6 +12,7 @@ ultimo_tempo = pygame.time.get_ticks()
 textura_lucas = pygame.image.load("img/Lucas.png")
 textura_luna = pygame.image.load("img/Luna.png")
 textura_icaro = pygame.image.load("img/Icaro.png")
+textura_cientista = pygame.image.load("img/Cientista.png")
 
 # RU
 x_ru_inicial = 3300
@@ -135,7 +136,7 @@ def desenhar(tela):
             tela.blit(sombra, (pos_x_vitoria - 247, 43)) 
             tela.blit(texto, (pos_x_vitoria - 250, 40))
         y_modelos = altura_chao - 70
-        distancia_entre_fila = 80
+        distancia_entre_fila = 110
         
         x_icaro_mundo = x_ru_inicial - 120
         x_luna_mundo = x_icaro_mundo - distancia_entre_fila
