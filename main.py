@@ -42,6 +42,7 @@ while rodando:
         continue 
 
     elif estado_inicial == "GAME OVER":
+        tela.fill(AZUL)
         acao = telas.tela_game_over(tela)
         
         if acao == "play":
@@ -73,15 +74,20 @@ while rodando:
             estado_inicial = "GAME OVER"
 
         # --- DESENHOS ---
-        jogador.desenhar_vida(tela, p["vidas"])
+        if not cenario.final_atingido:
+            jogador.desenhar_vida(tela, p["vidas"], VERMELHO)
         protegido = p["inv_timer"] > 0
         if cenario.final_atingido:
             modelo_fila_ru.desenhar_modelo(tela, p["x"], p["y"] , VERMELHO, textura_cientista)
+            
         else:
             if p["pulando"]:
                 poligonos_jogador = jogador.desenhar_pulo(tela, p["x"], p["y"], textura_cientista, p["velocidade"], protegido)
             else:
                 poligonos_jogador = jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
+
+        if cenario.final_atingido and teclas == [pygame.K_SPACE]:
+            estado_inicial = "MENU"
 
         # 5. Desenho do viewport
         if not x_inicio_ru < largura:

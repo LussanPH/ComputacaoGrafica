@@ -190,8 +190,8 @@ def desenhar_pulo(tela, x, y, textura, velocidade, invencivel = False):
 
     return [braco_tras, CARAMELO_ESCURO, corpo, BRANCO, mochila, VERMELHO, perna_tras, CARAMELO_ESCURO, perna_frente, CARAMELO, braco_frente, CARAMELO]
 
-def desenhar_vida(tela,vidas):
-    cor_coracao = VERMELHO
+def desenhar_vida(tela,vidas, cor):
+    
     espacamento = 35
     x_inicial = 40
     y_pos = 40
@@ -201,9 +201,9 @@ def desenhar_vida(tela,vidas):
         
         # 1. Parte de cima (Dois círculos pequenos)
         # Círculo da esquerda
-        funcoes.scanline_fill_circle(tela, x - 7, y_pos, 7, cor_coracao)
+        funcoes.scanline_fill_circle(tela, x - 7, y_pos, 7, cor)
         # Círculo da direita
-        funcoes.scanline_fill_circle(tela, x + 7, y_pos, 7, cor_coracao)
+        funcoes.scanline_fill_circle(tela, x + 7, y_pos, 7, cor)
         
         # 2. Parte de baixo (Um triângulo invertido)
         triangulo = [
@@ -211,7 +211,7 @@ def desenhar_vida(tela,vidas):
             (x + 14, y_pos + 2), 
             (x, y_pos + 15)
         ]
-        funcoes.scanline(tela, triangulo, cor_coracao)
+        funcoes.scanline(tela, triangulo, cor)
 
 def calcular_hitbox_jogador(x, y):
     # 1. HITBOX DO CORPO

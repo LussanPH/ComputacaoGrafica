@@ -5,7 +5,7 @@ from modelo_fila_ru import desenhar_modelo
 
 # ---------- ESTADO DO CENÁRIO ----------
 scroll_x = 0.0
-velocidade_movimento = 80
+velocidade_movimento = 170
 final_atingido = False
 ultimo_tempo = pygame.time.get_ticks()
 
@@ -15,7 +15,7 @@ textura_icaro = pygame.image.load("img/Icaro.png")
 textura_cientista = pygame.image.load("img/Cientista.png")
 
 # RU
-x_ru_inicial = 3300
+x_ru_inicial = 3200
 largura_ru = 450
 limite_scroll = (x_ru_inicial + largura_ru) - largura
 
@@ -57,6 +57,7 @@ def atualizar(dt):
         if scroll_x >= limite_scroll:
             scroll_x = limite_scroll
             final_atingido = True
+            
 
 # A função de desenhar tem como função desenhar        
 def desenhar(tela):
@@ -129,7 +130,7 @@ def desenhar(tela):
         pos_x_vitoria = x_ru_inicial - scroll_x -250
         if -200 < pos_x_vitoria < largura + 200:
             fonte_vitoria = pygame.font.SysFont(None, 50, bold=True)
-            msg = "HOJE TEM LASANHA!"
+            msg = "HOJE TEM LASANHA! Clique ESPAÇO para ir ao Menu"
             sombra = fonte_vitoria.render(msg, True, PRETO)
             texto = fonte_vitoria.render(msg, True, LARANJA)
 
