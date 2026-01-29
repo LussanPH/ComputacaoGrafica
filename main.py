@@ -15,9 +15,7 @@ clock = pygame.time.Clock()
 
 #Textura dos rostos
 textura_cientista = pygame.image.load("img/Cientista.png")
-textura_lucas = pygame.image.load("img/Lucas.png")
-textura_luna = pygame.image.load("img/Luna.png")
-textura_icaro = pygame.image.load("img/Icaro.png")
+
 
 estado_inicial = "MENU"
 estado_dados = None 
@@ -71,6 +69,7 @@ while rodando:
         
         p = estado_dados["player"]
         if p["vidas"] < 0:
+            tela.fill(AZUL)
             estado_inicial = "GAME OVER"
 
         # --- DESENHOS ---
@@ -82,7 +81,7 @@ while rodando:
         else:
             jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
 
-        modelo_fila_ru.desenhar_modelo(tela, 250, 150, CINZA_CLARO, textura_icaro)# Função para desenhar personagem na fila do RU
+        
 
         # 5. Desenho do minimapa com o jogador
         mover_minimapa = funcoes.viewport(tela, p["posicao_viewport_x"], p["posicao_viewport_y"])

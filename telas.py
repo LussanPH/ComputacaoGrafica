@@ -136,7 +136,7 @@ def tela_game_over(tela):
 
         # Desenhar fundo preto com scanline
         funcoes.desenhar_poligono(tela, fundo, AZUL)
-        funcoes.scanline(tela, fundo, AZUL)
+        funcoes.boundary_fill(tela,200,150,AZUL, AZUL)
         cenario.desenhar_game_over(tela)
        
 

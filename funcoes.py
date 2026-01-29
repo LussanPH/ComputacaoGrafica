@@ -437,6 +437,7 @@ def intersecao(x1,y1,w1,h1,x2,y2,w2,h2):
 
 def setTexturaCabeca(tela, textura, x_centro, y_centro, raio):
     largura_textura, altura_textura = textura.get_size()
+    x_centro, y_centro, raio = int(x_centro), int(y_centro), int(raio)
     diametro = raio*2
 
     for y in range(y_centro - raio, y_centro + raio):

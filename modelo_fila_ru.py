@@ -1,9 +1,9 @@
 from constantes import *
 import funcoes
 import math
+import pygame
 
-#cor: cor da mochila
-#textura: imagem a ser adicionada como rosto
+
 def desenhar_modelo(tela, x, y, cor, textura):
     #Braço de tras
     braco_tras = [(x + 4, y - 4), (x + 6, y), (x - 12, y + 20), (x - 14, y + 16)]
@@ -49,7 +49,7 @@ def desenhar_modelo(tela, x, y, cor, textura):
     #Desenhar cabeça
     distancia_origem = 14
 
-    yc_cabeca = y - distancia_origem
+    yc_cabeca = int(y - distancia_origem)
     raio_cabeca = int(math.sqrt(distancia_origem**2 + distancia_origem**2))
 
     pontos_circulo = funcoes.bresenham_circulo(tela, x + 4, yc_cabeca, raio_cabeca+1, BRANCO) 
@@ -83,3 +83,4 @@ def desenhar_modelo(tela, x, y, cor, textura):
     braco_frente = funcoes.transladar_pontos(braco_frente, 5, 15)
     funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
     funcoes.scanline(tela, braco_frente, CARAMELO)
+

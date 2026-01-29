@@ -1,12 +1,17 @@
 import pygame
 import funcoes
 from constantes import *
+from modelo_fila_ru import desenhar_modelo
 
 # ---------- ESTADO DO CENÁRIO ----------
 scroll_x = 0.0
-velocidade_movimento = 90
+velocidade_movimento = 150
 final_atingido = False
 ultimo_tempo = pygame.time.get_ticks()
+
+textura_lucas = pygame.image.load("img/Lucas.png")
+textura_luna = pygame.image.load("img/Luna.png")
+textura_icaro = pygame.image.load("img/Icaro.png")
 
 # RU
 x_ru_inicial = 3300
@@ -120,6 +125,27 @@ def desenhar(tela):
             teto_pts = [(x_inicio_telha, y_t), (x_ru_inicial, y_t), 
                         (x_ru_inicial, y_t-20), (x_inicio_telha, y_t-20)]
             desenhar_objeto_movel(tela, teto_pts, -scroll_x, TELHA)
+        pos_x_vitoria = x_ru_inicial - scroll_x -200
+        if -200 < pos_x_vitoria < largura + 200:
+            fonte_vitoria = pygame.font.SysFont(None, 80, bold=True)
+            msg = "HOJE TEM LASANHA!"
+            sombra = fonte_vitoria.render(msg, True, PRETO)
+            texto = fonte_vitoria.render(msg, True, LARANJA)
+
+            tela.blit(sombra, (pos_x_vitoria - 247, 43)) 
+            tela.blit(texto, (pos_x_vitoria - 250, 40))
+        y_modelos = altura_chao - 70
+        distancia_entre_fila = 80
+        
+        x_icaro_mundo = x_ru_inicial - 120
+        x_luna_mundo = x_icaro_mundo - distancia_entre_fila
+        x_lucas_mundo = x_luna_mundo - distancia_entre_fila
+
+        desenhar_modelo(tela, x_icaro_mundo - scroll_x, y_modelos, VERMELHO, textura_icaro)
+    
+        desenhar_modelo(tela, x_luna_mundo - scroll_x, y_modelos, VERDE, textura_luna)
+        
+        desenhar_modelo(tela, x_lucas_mundo - scroll_x, y_modelos, ROSA, textura_lucas)
 
         # Texto
         pos_x_texto = (x_ru_inicial + (largura_ru // 2)) - scroll_x
@@ -148,18 +174,6 @@ def desenhar_start(tela):
         funcoes.desenhar_poligono(tela, base, PRETO)
         
 def desenhar_game_over(tela):
-    # Definir cor de fundo
-    y_topo = 0
-    y_base = altura - 1
-    fundo = [
-        (0, y_topo),
-        (largura - 1, y_topo),
-        (largura - 1, y_base),
-        (0, y_base)
-    ]
-    funcoes.desenhar_poligono(tela, fundo, AZUL)
-    funcoes.scanline(tela, fundo, AZUL)
-
     # Desenhar chão
     y_topo = altura - altura // 3
     y_base = altura - 1
@@ -255,26 +269,36 @@ def desenhar_game_over(tela):
     funcoes.scanline(tela, teto, TELHA)
     
     espacamento = (largura_teto + largura_ru) // 2 - 70
-    y_topo_chao = altura - altura // 3
     largura_coluna = 20
 
     coluna_teto = [
         (espacamento - largura_coluna // 2, y_topo_teto),
         (espacamento + largura_coluna // 2, y_topo_teto),
-        (espacamento + largura_coluna // 2, y_topo_chao),
-        (espacamento - largura_coluna // 2, y_topo_chao)
+        (espacamento + largura_coluna // 2, y_topo),
+        (espacamento - largura_coluna // 2, y_topo)
     ]
     funcoes.desenhar_poligono(tela, coluna_teto, CINZA)
     funcoes.scanline(tela, coluna_teto, CINZA)
 
     base_teto = [
-        (espacamento - (largura_coluna // 2 + 10), y_topo_chao - altura_base_capital),
-        (espacamento + (largura_coluna // 2 + 10), y_topo_chao - altura_base_capital),
-        (espacamento + (largura_coluna // 2 + 10), y_topo_chao),
-        (espacamento - (largura_coluna // 2 + 10), y_topo_chao)
+        (espacamento - (largura_coluna // 2 + 10), y_topo - altura_base_capital),
+        (espacamento + (largura_coluna // 2 + 10), y_topo - altura_base_capital),
+        (espacamento + (largura_coluna // 2 + 10), y_topo),
+        (espacamento - (largura_coluna // 2 + 10), y_topo)
     ]
     funcoes.desenhar_poligono(tela, base_teto, CINZA_ESCURO)
     funcoes.scanline(tela, base_teto, CINZA_ESCURO)
+
+    y_modelo = y_topo - 80
+    
+    x_inicial = largura_ru - 60 
+    distancia_entre_eles = 100
+
+    desenhar_modelo(tela, x_inicial, y_modelo, VERMELHO, textura_icaro)
+
+    desenhar_modelo(tela, x_inicial - distancia_entre_eles, y_modelo, VERDE, textura_luna)
+    
+    desenhar_modelo(tela, x_inicial - (distancia_entre_eles * 2), y_modelo, ROSA, textura_lucas)
 
     #Texto RU
     font_size = max(12, int((y_topo) * 0.25))  
