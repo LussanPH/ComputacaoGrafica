@@ -11,7 +11,7 @@ def desenhar_jogador(tela, x, y, textura,invencivel = False):
         return
     
     velocidade_anim = 0.005 
-    amplitude_anim = 60
+    amplitude_anim = 40
     
     oscilacao = math.sin(tempo * velocidade_anim) * amplitude_anim
     angulo = -20 + oscilacao
@@ -57,17 +57,10 @@ def desenhar_jogador(tela, x, y, textura,invencivel = False):
     
     #Desenhar cabeça
     distancia_origem = 14
-    lista_x_pontos = [] #Vai ser necessário para calcular o novo raio
 
     xc_cabeca = x + distancia_origem
     yc_cabeca = y - distancia_origem
     raio_cabeca = int(math.sqrt(distancia_origem**2 + distancia_origem**2))
-
-    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) 
-    pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
-    for ponto in pontos_circulo:
-        funcoes.setPixel(tela, ponto[0], ponto[1], BRANCO)
-        lista_x_pontos.append(ponto[0])
 
     funcoes.setTexturaCabeca(tela, textura, xc_cabeca, yc_cabeca, raio_cabeca+1)
 
@@ -94,6 +87,8 @@ def desenhar_jogador(tela, x, y, textura,invencivel = False):
     braco_frente = funcoes.transladar_pontos(braco_frente, -5, 15)
     funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
     funcoes.scanline(tela, braco_frente, CARAMELO)
+
+    return [braco_tras, CARAMELO_ESCURO, corpo, BRANCO, mochila, VERMELHO, perna_tras, CARAMELO_ESCURO, perna_frente, CARAMELO, braco_frente, CARAMELO]
 
 
 def desenhar_pulo(tela, x, y, textura, velocidade, invencivel = False):
@@ -153,9 +148,6 @@ def desenhar_pulo(tela, x, y, textura, velocidade, invencivel = False):
     yc_cabeca = y - distancia_origem
     raio_cabeca = int(math.sqrt(distancia_origem**2 + distancia_origem**2))
 
-    pontos_circulo = funcoes.bresenham_circulo(tela, xc_cabeca, yc_cabeca, raio_cabeca+1, BRANCO) 
-    pontos_circulo = funcoes.escala(pontos_circulo, 0.7, 0.7)
-
     funcoes.setTexturaCabeca(tela, textura, xc_cabeca, yc_cabeca, raio_cabeca+1)
 
     #Perna de trás
@@ -195,7 +187,8 @@ def desenhar_pulo(tela, x, y, textura, velocidade, invencivel = False):
     braco_frente = funcoes.transladar_pontos(braco_frente, -5, 15)
     funcoes.desenhar_poligono(tela, braco_frente, CARAMELO)
     funcoes.scanline(tela, braco_frente, CARAMELO)
-    
+
+    return [braco_tras, CARAMELO_ESCURO, corpo, BRANCO, mochila, VERMELHO, perna_tras, CARAMELO_ESCURO, perna_frente, CARAMELO, braco_frente, CARAMELO]
 
 def desenhar_vida(tela,vidas):
     cor_coracao = VERMELHO

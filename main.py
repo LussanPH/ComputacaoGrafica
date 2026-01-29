@@ -19,7 +19,6 @@ textura_cientista = pygame.image.load("img/Cientista.png")
 
 estado_inicial = "MENU"
 estado_dados = None 
-velocidade_x_minimapa = 0.9
 
 
 rodando = True
@@ -79,17 +78,12 @@ while rodando:
             modelo_fila_ru.desenhar_modelo(tela, p["x"], p["y"] , VERMELHO, textura_cientista)
         else:
             if p["pulando"]:
-                jogador.desenhar_pulo(tela, p["x"], p["y"], textura_cientista, p["velocidade"], protegido)
+                poligonos_jogador = jogador.desenhar_pulo(tela, p["x"], p["y"], textura_cientista, p["velocidade"], protegido)
             else:
-                jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
+                poligonos_jogador = jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
 
-        
-
-        # 5. Desenho do minimapa com o jogador
-        mover_minimapa = funcoes.viewport(tela, p["posicao_viewport_x"], p["posicao_viewport_y"])
-
-        if mover_minimapa:
-            p["posicao_viewport_x"] += velocidade_x_minimapa
+        # 5. Desenho do viewport
+        funcoes.viewport(tela, poligonos_jogador, textura_cientista, p["pulando"], p["distancia_chao"], p["velocidade"], protegido)
         
         print(dt)
 

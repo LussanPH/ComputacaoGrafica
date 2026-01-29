@@ -5,7 +5,7 @@ from modelo_fila_ru import desenhar_modelo
 
 # ---------- ESTADO DO CENÁRIO ----------
 scroll_x = 0.0
-velocidade_movimento = 150
+velocidade_movimento = 80
 final_atingido = False
 ultimo_tempo = pygame.time.get_ticks()
 

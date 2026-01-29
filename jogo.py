@@ -18,6 +18,7 @@ def inicializar_estado():
             "x": 125,
             "y": Y_CHAO,
             "pulando": False,
+            "distancia_chao": 0,
             "velocidade": 0,
             "vidas": 2, # Coração 0, 1 e 2
             "inv_timer": 0,
@@ -43,10 +44,15 @@ def processar_logica(tela, estado, dt, teclas):
     
     if p["pulando"]:
         p["velocidade"] += GRAVIDADE
+        if p["velocidade"] < 0:
+            p["distancia_chao"] -= p["velocidade"] + 0.8
+        else:
+             p["distancia_chao"] -= p["velocidade"] - 0.8
         p["y"] += p["velocidade"]
         if p["y"] >= Y_CHAO:
             p["y"] = Y_CHAO
             p["pulando"] = False
+            p["distancia_chao"] = 0
             p["velocidade"] = 0
 
     # 2. Timers (Invencibilidade)

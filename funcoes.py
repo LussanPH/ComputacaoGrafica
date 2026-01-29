@@ -457,30 +457,88 @@ def setTexturaCabeca(tela, textura, x_centro, y_centro, raio):
                 cor = textura.get_at((tx, ty))
                 tela.set_at((x, y), cor)
 
-def viewport(tela, x, y):
-    quadrado = [(15, int((altura - altura//10))), (15, altura - 35), (int(largura//4), altura - 35), (int(largura//4), (altura - int(altura//10)))]
-    haste_chegada =  [(int(largura//4) - 4, int((altura - altura//10)) - 20),
-                (int(largura//4) - 4, int((altura - altura//10)) - 1),
-                (int(largura//4) - 2, int((altura - altura//10)) - 1),
-                (int(largura//4) - 2, int((altura - altura//10)) - 20)]
-    bandeira_chegada = [(int(largura//4) - 1, int((altura - altura//10)) - 20),
-                        (int(largura//4) - 1, int((altura - altura//10)) - 10),
-                        (int(largura//4) + 10, int((altura - altura//10)) - 15)]
-    circulo_jogador = bresenham_circulo(tela, int(x), y, 2, BRANCO)
+def viewport(tela, poligonos_jogador, textura, pulando, distancia, velocidade, protegido):
+    retangulo = [(0, 0), (0, altura), (largura, altura), (largura, 0)]
+    chao = [(0, 300), (0, altura), (largura, altura), (largura, 300)]
+    retangulo = escala(retangulo, 0.2, 0.2)
+    chao = escala(chao, 0.2, 0.2)
+    compensacao_minimapa = distancia
 
-    desenhar_poligono(tela, quadrado, PRETO)
-    desenhar_poligono(tela, haste_chegada, BRANCO)
-    desenhar_poligono(tela, bandeira_chegada, VERMELHO)
-    scanline(tela, quadrado, PRETO)
-    scanline(tela, haste_chegada, BRANCO)
-    scanline(tela, bandeira_chegada, VERMELHO)
 
-    desenhar_poligono(tela, circulo_jogador, BRANCO)
+    retangulo = transladar_pontos(retangulo, -375, 150)
+    chao = transladar_pontos(chao, -375, 50)
+    scanline(tela, retangulo, AZUL)
+    desenhar_poligono(tela, retangulo, PRETO)
+    scanline(tela, chao, CINZA)
+    desenhar_poligono(tela, chao, PRETO)
 
-    if not x >= int(largura//4) - 4:
-        return True
-    else:
-        return False
+    if not protegido:
+        cores = []
+        elementos_remocao = []
+        for i in range(len(poligonos_jogador)):
+            if i > 0 and (i % 2 == 1):
+                cores.append(poligonos_jogador[i])
+                elementos_remocao.append(poligonos_jogador[i])
+    
+        for i in elementos_remocao:
+            poligonos_jogador.remove(i)
+        cont = 0
+        setTexturaCabeca(tela, textura, 125, 355 - (compensacao_minimapa * 0.1), 10)
+        for poligono in poligonos_jogador:
+            poligono = transladar_pontos(poligono, 0, 100)
+            poligono = escala(poligono, 0.3, 0.3)
+            match cont:
+                case 0: #Braço de trás
+                    if not pulando:
+                        poligono = transladar_pontos(poligono, 7, 25)
+                    else:
+                        if velocidade < 0:
+                            poligono = transladar_pontos(poligono, 7, 25 + compensacao_minimapa)
+                        else:
+                            poligono = transladar_pontos(poligono, 7, 30 + compensacao_minimapa)
+                case 1: #Corpo
+                    if not pulando:
+                        poligono = transladar_pontos(poligono, 0, 27)
+                    else:
+                        poligono = transladar_pontos(poligono, 0, 27 + compensacao_minimapa)
+                case 2: #Mochila
+                    if not pulando:
+                        poligono = transladar_pontos(poligono, 5, 25)
+                    else:
+                        if velocidade < 0:
+                            poligono = transladar_pontos(poligono, 5, 25 + compensacao_minimapa)
+                        else:
+                            poligono = transladar_pontos(poligono, 5, 25 + compensacao_minimapa)
+                case 3: #Perna de trás
+                    if not pulando:
+                        poligono = rotacionar(poligono, -15, poligono[0])
+                        poligono = transladar_pontos(poligono, 15, 0)
+                    else:
+                        if velocidade < 0:
+                            poligono = transladar_pontos(poligono, 21, 5 + compensacao_minimapa)
+                        else:
+                            poligono = transladar_pontos(poligono, 20, 10 + compensacao_minimapa)
+                case 4: #Perna da frente
+                    if not pulando:
+                        poligono = rotacionar(poligono, -5, poligono[0])
+                        poligono = transladar_pontos(poligono, 7, -2)
+                    else:
+                        if velocidade < 0:
+                            poligono = transladar_pontos(poligono, 5, -2 + compensacao_minimapa)
+                        else:
+                            poligono = transladar_pontos(poligono, 3, 5 + compensacao_minimapa)
+                case 5: #Braço da frente
+                    if not pulando:
+                        poligono = transladar_pontos(poligono, 0, 20)
+                    else:
+                        if velocidade < 0:
+                            poligono = transladar_pontos(poligono, 0, 20 + compensacao_minimapa)
+                        else:
+                            poligono = transladar_pontos(poligono, 0, 25 + compensacao_minimapa)
+
+            desenhar_poligono(tela, poligono, cores[cont])
+            scanline(tela, poligono, cores[cont])
+            cont += 1
     
 def interpola_cor(c1, c2, t):
     r = int(c1[0] + (c2[0]-c1[0])*t)
