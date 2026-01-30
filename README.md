@@ -63,7 +63,10 @@ Onde $dt$ é limitado para garantir estabilidade física mesmo em quedas de perf
 
 ---
 
-## 🚀 Como Executar
+## Link do Repositório: 
+https://github.com/LussanPH/ComputacaoGrafica.git
+
+## Como Executar
 1. Certifique-se de ter o **Python 3** e a biblioteca **Pygame** instalados.
 2. Execute o comando:
    ```bash

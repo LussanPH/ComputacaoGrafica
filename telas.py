@@ -139,7 +139,6 @@ def tela_game_over(tela):
         funcoes.desenhar_poligono(tela, fundo, AZUL)
         funcoes.boundary_fill(tela,200,150,AZUL, AZUL)
         cenario.desenhar_game_over(tela)
-       
 
         # Título com contorno
         titulo_x = largura // 2 - surf_titulo.get_width() // 2
@@ -163,3 +162,4 @@ def tela_game_over(tela):
         clock.tick(30)
 
     return acao 
+

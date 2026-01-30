@@ -86,7 +86,7 @@ while rodando:
             else:
                 poligonos_jogador = jogador.desenhar_jogador(tela, p["x"], p["y"], textura_cientista, protegido)
 
-        if cenario.final_atingido and teclas == [pygame.K_SPACE]:
+        if cenario.final_atingido and teclas[pygame.K_SPACE]:
             estado_inicial = "MENU"
 
         # 5. Desenho do viewport
